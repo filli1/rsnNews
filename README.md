@@ -9,3 +9,4 @@ Git switch "something" switches to a branch
 To merge the changes from to branches run the command -> git merge -m "Merge something back to main" something
 To delete a branch -> git branch -d "something"
 Git switch -c something -> creates a branch and switches to it
+git push --all -> pushes all branches
