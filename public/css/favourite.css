@@ -1,0 +1,25 @@
+.favourite {
+    padding: 2px;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    margin: 6px;
+    background-position: center;
+    background-size: cover;
+}
+
+.favouriteNotSelected {
+    background-image: url('../img/heart-2.png');
+}
+/*Changes the background image if hovering over*/
+.favouriteNotSelected:hover {
+    background-image: url('../img/heart-3.png') !important;
+}
+
+.favouriteSelected {
+    background-image: url('../img/heart-3.png') !important;
+}
+/*Changes the background image if hovering over*/
+.favouriteSelected:hover {
+    background-image: url('../img/heart-2.png') !important;
+}

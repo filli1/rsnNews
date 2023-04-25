@@ -1,0 +1,14 @@
+{
+    "server": "prog-databaser.database.windows.net:1433",
+    "authenthication": {
+        "type": "default",
+        "options": {
+            "userName": "Fillip@prog-databaser",
+            "password": "prog2023-Skole"
+        }
+    },
+    "options":{
+        "encrypt": true,
+        "database": "prog-databaser/rsnNews"
+    }
+}

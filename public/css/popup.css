@@ -1,0 +1,45 @@
+/*POPUP*/
+
+#popup{
+    display: none;
+    left: 0;
+    top: 0;
+    width: 60vw;
+    height: 60vh;
+    position: fixed;
+    z-index: 1;
+    background-color: white;
+    margin: 20vh 20vw 20vh 20vw;
+    overflow: scroll;
+}
+
+#closeBtn {
+    float: right;
+}
+
+#closeBtn:hover, #closeBtn:focus {
+    color: #000;
+    cursor: pointer;
+}
+
+#popupContent {
+    padding: 15px;
+}
+
+#popupContent form {
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+    flex-grow: 1;
+}
+
+#popupContent input {
+    padding: 15px;
+    margin: 15px;
+}
+
+.error {
+    background-color: indianred;
+    padding: 15px;
+    width: 100%;
+}

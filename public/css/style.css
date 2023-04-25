@@ -1,0 +1,125 @@
+body {
+    display: flex;
+    flex-direction: row;
+    margin:0px;
+    justify-content: flex-start;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+aside {
+    background-color: rgb(55,59,83);
+    display: flex;
+    flex-direction: column;
+    padding-top: 110px;
+    width: 90px;
+}
+
+.menuItem {
+    background-color: whitesmoke;
+    height: 50px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    margin: 10px 0px 0px 10px;
+    display: flex;
+    align-items: center;
+    vertical-align: middle;
+    padding: 10px;
+    justify-content: flex-end;
+}
+
+.flexRow {
+    display: flex;
+    flex-direction: row;
+}
+
+.flexCol {
+    display: flex;
+    flex-direction: column;
+}
+
+#searchForm {
+    border-radius: 80px;
+    box-shadow: 0px 0px 6px 0px rgba(0,0,0,0.75);
+    width: 50vw;
+    padding: 15px;
+}
+
+#searchForm input, #searchForm select {
+    border-width: 0px 0px 0px 1px;
+    border-style: solid;
+    border-color: dimgrey;
+    padding-left: 5px;
+    width: fit-content;
+}
+
+#searchForm label {
+    display: block;
+    font-size: 6pt;
+}
+
+/*Search input field*/
+#q {
+    border: none !important;
+    padding-left: 15px;
+    width: 100%;
+    flex-grow: 1;
+}
+
+#searchForm input:focus, #searchForm select:focus {
+    outline: none;
+}
+
+.header {
+    justify-content: space-between;
+    padding: 12px;
+    height: 65px;
+    align-content: center;
+    background-color: rgb(255,255,255);
+}
+
+.flexGrow {
+    flex-grow: 1;
+}
+
+#contentContainer {
+    background-color: rgb(248,248,251);
+    padding: 0px 12px 10px 12px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.widget {
+    justify-content: center;
+    align-items: center;
+}
+
+#time {
+    font-size: 42pt;
+}
+
+.col49{
+    width:49%;
+}
+
+.borderStyle {
+    border-radius: 10px;
+    box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.75);
+    padding: 10px;
+    background-color: white;
+}
+
+#categoryBtnContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    flex-grow: 1;
+}
+
+.categoryBtn {
+    padding: 10px;
+    margin: 10px
+}
+
+.favouriteCategory {
+    background-color: lightgreen;
+}

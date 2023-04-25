@@ -1,0 +1,67 @@
+/*Weather*/
+#weather {
+    justify-content: space-between;
+    padding: 10px 40px 10px 40px;
+}
+
+#weatherSymbol {
+    height: 45px;
+    width: 45px;
+}
+
+#weatherConditions {
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#temperature {
+    margin-left: 30px;
+    font-size: 42pt;
+    font-weight: 50;
+}
+
+#sunRiseSet .flexCol {
+    justify-content: space-between;
+    margin-left: 30px;
+}
+
+#sunsetContainer {
+    margin-left: 50px;
+}
+
+#sunRiseSet img {
+    height: 50px;
+    width: 50px;
+}
+
+.sunTime {
+    font-size: 10pt;
+    font-weight: 700;
+}
+
+#forecast div {
+    justify-content: space-between;
+}
+
+#forecastTable {
+    display: flex;
+    flex-grow: 1;
+    text-align: center;
+    border-top: lightgray 1px solid;
+    padding-top: 20px;
+    margin-top: 20px;
+    justify-content: space-evenly;
+}
+
+#forecastTable td, th {
+    padding: 10px 20px 10px 20px;
+
+}
+
+#forecastTable tr td img {
+    width: 25px;
+}
+
+#forecastTable td:nth-child(-n+6), th:nth-child(-n+6) {
+    border-right: lightgray 1px solid;
+}

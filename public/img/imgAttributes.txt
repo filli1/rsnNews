@@ -1,0 +1,11 @@
+Klart = <a href="https://www.flaticon.com/free-icons/sun" title="sun icons">Sun icons created by kosonicon - Flaticon</a>
+Skyet = <a href="https://www.flaticon.com/free-icons/cloud" title="cloud icons">Cloud icons created by iconixar - Flaticon</a>
+Tåget = <a href="https://www.flaticon.com/free-icons/fog" title="fog icons">Fog icons created by Dreamstale - Flaticon</a>
+Regn = <a href="https://www.flaticon.com/free-icons/rain" title="rain icons">Rain icons created by Freepik - Flaticon</a>
+Torden = <a href="https://www.flaticon.com/free-icons/storm" title="storm icons">Storm icons created by Freepik - Flaticon</a>
+Sne = <a href="https://www.flaticon.com/free-icons/snow" title="snow icons">Snow icons created by Freepik - Flaticon</a>
+Sunset = <a href="https://www.flaticon.com/free-icons/sunset" title="sunset icons">Sunset icons created by Mehwish - Flaticon</a>
+Sunrise = <a href="https://www.flaticon.com/free-icons/sunrise" title="sunrise icons">Sunrise icons created by Mehwish - Flaticon</a>
+Heart = <a href="https://www.flaticon.com/free-icons/favourite" title="favourite icons">Favourite icons created by Freepik - Flaticon</a>
+Home = <a href="https://www.flaticon.com/free-icons/home-button" title="home button icons">Home button icons created by Pixel perfect - Flaticon</a>
+Heart for articles = <a href="https://www.flaticon.com/free-icons/heart" title="heart icons">Heart icons created by Freepik - Flaticon</a>

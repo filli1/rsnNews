@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eksamensprojekt 2. semester</title>
+    <!--Loads all the scripts-->
+    <script src="static/js/dateTime.js"></script>
+    <script src="static/js/weather.js"></script>
+    <script src="static/js/popup.js"></script>
+    <script src="static/js/login.js"></script>
+    <script src="static/js/news.js"></script>
+    <script src="static/js/user.js"></script>
+    <script src="static/js/script.js"></script>
+    <script src="static/js/favouriteCategory.js"></script>
+    <!--Loads all the stylesheets-->
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/favourite.css">
+    <link rel="stylesheet" href="static/css/popup.css">
+    <link rel="stylesheet" href="static/css/weather.css">
+    <link rel="stylesheet" href="static/css/articles.css">
+</head>
+<body>
+    <aside>
+        <div class="menuItem"><img src="static/img/home.png" alt="Home" width="25px"></div>
+        <div class="menuItem" id="favouriteMenuBtn"><img src="static/img/heart.png" alt="Favourites" width="25px"></div>
+    </aside>
+    <div class="flexCol flexGrow" id="content">
+        <header class="flexRow header">
+            <form id="searchForm" class="flexRow">
+                <input type="text" name="q" id="q" class="flexGrow" placeholder="Search for new music, news, artists...">
+                
+                <div>
+                    <label for="fromDate">From date:</label>
+                    <input type="date" name="from" id="from">
+                </div>
+                <div>
+                    <label for="to">To date:</label>
+                    <input type="date" name="to" id="to">
+                </div>
+                <div>
+                    <label for="language">Language</label>
+                    <select id="language" name="language">
+                        <option value="language" disabled>Sprog</option>
+                        <option value="">- Alle sprog</option>
+                        <option value="ar">- Arabisk</option>
+                        <option value="de">- Tysk</option>
+                        <option value="en">- Engelsk</option>
+                        <option value="es">- Spansk</option>
+                        <option value="fr">- Fransk</option>
+                        <option value="he">- Hebraisk</option>
+                        <option value="it">- Italiensk</option>
+                        <option value="nl">- Hollandsk</option>
+                        <option value="no" selected>- Norsk</option>
+                        <option value="pt">- Portugisisk</option>
+                        <option value="ru">- Russisk</option>
+                        <option value="sv">- Svensk</option>
+                        <option value="zh">- Kinesisk</option>
+                    </select>
+                </div>
+                
+                    
+            </form>
+            <div id="user">
+            </div>
+        </header>
+        <div id="contentContainer" class="flexRow flexGrow">
+            <div id="newsContainer" class="flexCol col49">
+                <h3>Nyheder</h3>
+
+                <!--SPOTLIGHT SECTION-->
+                <div id="spotlight" class="borderStyle flexRow">
+                    <div id="spotDetails">
+                        <a id="spotCategory">//Kategori</a>
+                        <h2 id="spotTitle">NYHEDSTITEL</h2>
+                        <a id="spotSource">- SOURCE</a>
+                    </div>
+                    <div id="spotButtonSection" class="flexCol">
+                        <a href="#" id="spotReadMoreBtn" class="readMoreBtn">Read more</a>
+                    </div> 
+                </div>
+
+                <!--ARTICLE SECTION-->
+                <div id="articles" class="flexRow flexGrow emulated-flex-gap"></div>
+            </div>
+
+            <!--Widgets-->
+            <div id="widgetContainer" class="flexCol col49">
+                <h3>Tid</h3>
+                <div class="widget flexCol flexGrow borderStyle" id="timeWidget">
+                    <a id="time"></a>
+                    <a id="date"></a>
+                    <a id="timezone"></a>
+                </div>
+                <h3>Vejr</h3>
+                <!--Weather today-->
+                <div class="widget borderStyle flexRow flexGrow" id="weather">
+                    <div id="weatherConditionsLocation" class="flexCol">
+                        <div id="weatherConditions" class="flexRow">
+                            <div id="condition">
+                                <img src="" alt="weather symbol" srcset="" id="weatherSymbol">
+                            </div>
+                            <div id="temperature">
+                                
+                            </div>
+                        </div>
+                        <div id="weatherLocation">
+                            Copenhagen,<br>
+                            Denmark
+                        </div>
+                    </div>
+                    <!--Sunrise and sunset container-->
+                    <div id="sunRiseSet" class="flexRow">
+                        <div id="sunriseContainer" class="flexRow">
+                            <div id="sunriseSymbol">
+                                <img src="static/img/sunrise.png" alt="sunrise symbol" srcset="">
+                            </div>
+                            <div id="sunriseTextContainer" class="flexCol">
+                                <div id="sunrise">
+                                    Sunrise
+                                </div>
+                                <div id="sunriseTime" class="sunTime">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <div id="sunsetContainer" class="flexRow">
+                            <div id="sunsetSymbol">
+                                <img src="static/img/sunset.png" alt="sunrise symbol" srcset="">
+                            </div>
+                            <div id="sunsetTextContainer" class="flexCol">
+                                <div id="sunset">
+                                    Sunset
+                                </div>
+                                <div id="sunsetTime" class="sunTime">
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--Forecast-->
+                <div class="widget borderStyle flexcol flexGrow" id="forecast">
+                    <div class="flexRow flexGrow">
+                    <h5>Forecast</h5>
+                    <button class="readMoreBtn">Read more</button>
+                    </div>
+                    <table id="forecastTable">
+                        <tbody id="forecastTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--POPUP-->
+    <div id="popup" class="borderStyle">
+        <span id="closeBtn">&times;</span>
+        <div id="popupContent">
+            
+        </div>
+    </div>
+</body>
+</html>
+
+

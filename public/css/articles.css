@@ -1,0 +1,104 @@
+#spotlight{
+    justify-content: space-between;
+    background-size: cover;
+    color: white;
+    box-shadow: inset 0 0 0 1000px rgba(0,0,0,.3);
+    flex-grow: 2;
+}
+
+#spotButtonSection {
+    justify-content: flex-end;
+}
+
+#spotButtonSection a {
+    background-color: transparent;
+    border-radius: 5px;
+    border-color: black;
+    padding: 7px;
+    color: white;
+}
+
+#spotDetails {
+    padding: 30px 0px 0px 30px;
+}
+
+
+#articles {
+    margin-top: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.article {
+    width: 146px;
+    justify-content: space-between;
+    position: relative;
+}
+
+
+.article img {
+    float: left;
+    border-radius: 10px;
+    width: 100%;
+    height: 96px;
+    object-fit: cover;
+}
+
+
+.article h4 {
+    font-weight:700;
+    font-size: 10pt;
+}
+
+.article .source {
+    color: darkgrey;
+    font-size: 8pt;
+}
+
+.readMoreBtn {
+    background-color: transparent;
+    font-size: 8pt;
+    color: darkgray;
+    text-decoration: none;
+    border-radius: 5px;
+    border: 1px black solid;
+    padding: 7px;
+}
+
+.article div {
+    justify-content: space-between;
+    align-items: center;
+}
+
+#forecast {
+    margin-top: 25px;
+} 
+
+
+/*THE FLEX GAP IS TAKEN FROM THIS WEBSITE https://coryrylan.com/blog/css-gap-space-with-flexbox*/
+.emulated-flex-gap {
+    --gap: 12px;
+    display: inline-flex;
+    flex-wrap: wrap;
+    margin: calc(-1 * var(--gap)) 0 0 calc(-1 * var(--gap));
+    width: calc(100% + var(--gap));
+  }
+  
+.emulated-flex-gap > * {
+margin: var(--gap) 0 0 var(--gap);
+}
+
+.alreadyRead {
+    padding: 6px;
+    border: 1px navy solid;
+    border-radius: 8px;
+    width: 40%;
+    text-align: center;
+    color: navy;
+    font-size: 8pt;
+    position:absolute;
+    margin: 6px;
+    margin-left: 38%;
+    background-color: rgba(255,255,255,0.4);
+}
