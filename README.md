@@ -10,3 +10,6 @@ To merge the changes from to branches run the command -> git merge -m "Merge som
 To delete a branch -> git branch -d "something"
 Git switch -c something -> creates a branch and switches to it
 git push --all -> pushes all branches
+git fetch -> fetches all branches
+git merch -> merges all branches
+git pull -> fetches and merges all branches
