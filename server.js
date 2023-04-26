@@ -34,5 +34,12 @@ var server = app.listen(port, function(error){
     if (error) throw error;
     console.log("Express server listening on port, ", port)
 });
+const users = require('./routes/users.route')
+app.use('/users', users)
 
+const news = require('./routes/news.route')
+app.use('/news', news)
+
+const weather = require('.routes/weather.route')
+app.use('/weather', weather)
 //TO CLOSE DOWN A SERVER PRESS CTRL + C

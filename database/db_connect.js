@@ -16,7 +16,7 @@ connection.on('connect', function(err) {
         //logs the success message
         console.log("Connected")
         //executes the SQL query with the async function executeSQL()
-        executeSQL()  
+        executeSQL("Select * FROM news")  
             .then(response => { // <- this is the response from the promise
                 console.log(response)
             }) 
@@ -30,11 +30,11 @@ connection.on('connect', function(err) {
 connection.connect()
 
 //Executes the SQL query with an async function
-function executeSQL() {
+function executeSQL(query) {
     //returns a promise for data
     return new Promise((resolve, reject) => {
         //makes the SQL request to the database
-        request = new Request("SELECT * FROM news", function(err){
+        request = new Request(query, function(err){
             if(err){
                 //logs error if any
                 console.log(err);
