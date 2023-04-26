@@ -13,11 +13,11 @@ CREATE TABLE weather (
 
 CREATE TABLE users (
     userID int,
-    nationality varchar,
-    firstName varchar,
-    lastName varchar,
-    email varchar,
-    password varchar
+    nationality varchar(255),
+    firstName varchar(255),
+    lastName varchar(255),
+    email varchar(255),
+    password varchar(255)
 )
 
 ALTER TABLE users
@@ -31,12 +31,12 @@ ADD PRIMARY KEY (userID)  -- Definerer primary key i user-tabellen som userID
 
 CREATE TABLE news (
     articleID int,
-    title varchar,
-    imageUrl varchar,
-    source varchar,
+    title varchar(255),
+    imageUrl varchar(255),
+    source varchar(255),
     publishedAt datetime,
-    author varchar,
-    description varchar
+    author varchar(255),
+    description varchar(255)
 )
 
 ALTER TABLE news
