@@ -42,7 +42,7 @@ connection.connect()
         columns.forEach(function(column) {
             row[column.metadata.colName] = column.value;
             if (rows.length >= 10) {
-                rows.shift(); // remove the first element from the array if there are more than 10 rows
+                rows.shift(); //removes the first (oldest) element from the array if there are more than 10 rows
                 
             }
         });
@@ -53,20 +53,38 @@ connection.connect()
     }
 module.exports = {getNews};
     
+    //Adds a row to the likes table if a user likes an article
+    function like(req, res) {
+        const { articleId, userId } = req.body;
+        const requestLike = new Request('INSERT INTO likes (articleId, userId) VALUES (@articleId, @userId);', function(err, rowCount) {
+        if (err) {
+            console.error(err);
+            return;
+        }
+        console.log(`${rowCount} row(s) inserted into likes table.`);
+        });
+    
+        requestLike.addParameter('articleId', TYPES.Int, articleId);
+        requestLike.addParameter('userId', TYPES.Int, userId);
+    
+        connection.execSql(requestLike);
+    }
+    module.exports = { like };
+    
 
-
-//hente og tælle likes fra like tabel, så den tæller hvor mange gange en artikel er i tabellen (jeg er overhovedet ikke sikker på denne)
+//Counts the amount of likes an article has, by counting how many times the article ID appears in the likes table.
 function getLikes(req, res){
 const requestLikes = new Request("SELECT article_id, COUNT(*) as likes_count FROM likes GROUP BY article_id'", function(err, rowCount, rows) {
     if (err) {
         console.error(err);
         return;
       }
+      //Counts the amount of likes, and creates an array with article id and amount of likes.
       const likesCount = rows.map(row => ({
         articleId: row.article_id.value,
         likesCount: row.likes_count.value
       }));
-  
+  //Converts the array to json format.
   res.json(likesCount);
 });
 
@@ -74,7 +92,8 @@ connection.execSql(requestLikes);
 }
 module.exports = {getLikes};
 
-//fjerne likes, user id og newsid
+//Delete row in the likes table if a user unlikes an article 
+function unlike (req, res){
 const requestUnlike = new Request(`DELETE FROM likes WHERE articleId = @articleId AND userId = @userId;`, function(err, rowCount) {
     if (err) {
         console.error(err);
@@ -87,5 +106,7 @@ const requestUnlike = new Request(`DELETE FROM likes WHERE articleId = @articleI
 requestUnlike.addParameter('articleId', TYPES.Int, articleId);
 requestUnlike.addParameter('userId', TYPES.Int, userId);
 
-connection.execSql(request);
+connection.execSql(requestUnlike);
+}
+module.exports = {unlike}
 
