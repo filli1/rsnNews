@@ -15,22 +15,26 @@ connection.on('connect', function(err) {
         console.log(err)
         return
     } 
+    console.log("Sucessfully connected")
     //The getNews function is called upon when the connection has been succesful, to avoid being called before the connection is established.
     getNews();
 
 });
+
+//Har ikke testet så meget i denne fil endnu
 
 
 //The connection is established
 connection.connect()
 
     // runs a simple query to select all news articles
-    function getNews(req, res){
+    function getNews(){
     const requestNews = new Request("SELECT TOP 10 * FROM news ORDER BY publishedAt DESC", function(err, rowCount) {
         if (err) {
             console.log(err);
         } else {
             console.log(rowCount + ' rows');
+            console.log(rows)
         }
         // close the connection
         connection.close(); //Skal jeg connecte og close for hver query, hvordan? Har ikke gjort noget på de andre endnu
@@ -54,7 +58,7 @@ connection.connect()
 module.exports = {getNews};
     
     //Adds a row to the likes table if a user likes an article
-    function like(req, res) {
+    function like(req) {
         const { articleId, userId } = req.body;
         const requestLike = new Request('INSERT INTO likes (articleId, userId) VALUES (@articleId, @userId);', function(err, rowCount) {
         if (err) {
@@ -69,11 +73,11 @@ module.exports = {getNews};
     
         connection.execSql(requestLike);
     }
-    module.exports = { like };
+    module.exports = {like};
     
 
 //Counts the amount of likes an article has, by counting how many times the article ID appears in the likes table.
-function getLikes(req, res){
+function getLikes(res){
 const requestLikes = new Request("SELECT article_id, COUNT(*) as likes_count FROM likes GROUP BY article_id'", function(err, rowCount, rows) {
     if (err) {
         console.error(err);
@@ -93,7 +97,7 @@ connection.execSql(requestLikes);
 module.exports = {getLikes};
 
 //Delete row in the likes table if a user unlikes an article 
-function unlike (req, res){
+function unlike (){
 const requestUnlike = new Request(`DELETE FROM likes WHERE articleId = @articleId AND userId = @userId;`, function(err, rowCount) {
     if (err) {
         console.error(err);
