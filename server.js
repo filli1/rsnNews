@@ -40,6 +40,6 @@ app.use('/users', users)
 const news = require('./routes/news.route')
 app.use('/news', news)
 
-const weather = require('.routes/weather.route')
+const weather = require('./routes/weather.route')
 app.use('/weather', weather)
 //TO CLOSE DOWN A SERVER PRESS CTRL + C
