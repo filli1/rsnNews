@@ -31,6 +31,7 @@ function executeSQL(query) {
                 //creates an empty object to store the response from the database in an understandable format
                 var counter = 1 
                 response = {}
+                let outputInserted = false;
 
                 request.on('row',function(columns){
                     if (query.trim().toUpperCase().startsWith("SELECT")) {
@@ -41,6 +42,9 @@ function executeSQL(query) {
                         })
                         //increments the counter by 1
                         counter += 1;
+                    } else if (query.trim().toUpperCase().startsWith("INSERT INTO USERS") && !outputInserted) {
+                        outputInserted = true;
+                        response['userID'] = columns[0].value;
                     }
                 })
 
