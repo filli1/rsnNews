@@ -22,7 +22,15 @@ function executeSQL(query) {
                     } else {
                         if (query.trim().toUpperCase().startsWith("SELECT")) {
                             resolve(response);
-                        } else {
+                        } else if (query.trim().toUpperCase().startsWith("INSERT INTO USERS")){
+                            resolve({message: "User added to database"});
+                        } else if (
+                            query.trim().toUpperCase().startsWith("UPDATE") &&
+                            rowCount === 0 || query.trim().toUpperCase().startsWith("DELETE") && rowCount === 0
+                          ) {
+                            reject("User not found");
+                          }
+                        else {
                             resolve({ affectedRows: rowCount });
                         }
                     }

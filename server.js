@@ -21,6 +21,8 @@ app.use(cors({
     origin: ['https://api.open-meteo.com/v1/forecast','https://newsapi.org/v2/top-headlines']
 }))
 
+app.use(express.json());
+
 //Server resources from public folder
 app.use('/static', express.static('public'))
 
