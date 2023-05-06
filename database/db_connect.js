@@ -19,6 +19,7 @@ function executeSQL(query) {
                     if(err){
                         //logs error if any
                         console.log(err);
+                        reject(err)
                     } else {
                         if (query.trim().toUpperCase().startsWith("SELECT")) {
                             resolve(response);
@@ -28,7 +29,7 @@ function executeSQL(query) {
                             query.trim().toUpperCase().startsWith("UPDATE") &&
                             rowCount === 0 || query.trim().toUpperCase().startsWith("DELETE") && rowCount === 0
                           ) {
-                            reject("User not found");
+                            reject("User or Article not found (404)");
                           }
                         else {
                             resolve({ affectedRows: rowCount });

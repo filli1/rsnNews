@@ -7,23 +7,43 @@ router.post('/', (req, res) => {
   return userController.createUser(req, res);
 });
 
-router.delete('/:email', userController.deleteUser);
+router.delete('/s/:email', (req, res) => {
+  return userController.deleteUser(req, res);
+});
 
-router.put('/:userID', userController.updateUser);
 
-router.get('/:userID', userController.getUser)
+router.put('/s/:userID', (req, res) => {
+  return userController.updateUser(req, res);
+});
 
-router.get('/all', userController.getAllUsers)
+router.get('/s/:userID', (req, res) => {
+  return userController.getUser(req, res);
+});
 
-router.post('/likes', userController.addLiked)
+router.get('/all', (req, res) => {
+  return userController.getAllUsers(req, res);
+});
 
-router.delete('/likes', userController.unlike)
+router.post('/likes', (req, res) => {
+  return userController.addLiked(req, res);
+});
 
-router.get('/likes/count/:articleID', userController.countLikes)
+router.delete('/likes', (req, res) => {
+  return userController.unlike(req, res);
+});
 
-router.post('/read', userController.addRead)
+//skal fjernes hvis den også fjernes fra user controller
+router.get('/likes/count/:articleID', (req, res) => {
+  return userController.countLikes(req, res);
+});
 
-router.post('/favourite', userController.addFavourite)
+router.post('/read', (req, res) => {
+  return userController.addRead(req, res);
+});
+
+router.post('/favourite', (req, res) => {
+  return userController.addFavourite(req, res);
+});
 
 module.exports = router;
 

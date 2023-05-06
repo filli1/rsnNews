@@ -103,8 +103,9 @@ exports.getUser = (req, res) => {
 }
 
 //Gets all users from the database VIRKER IKKE giver error 404 user not found?
+//denne virker ikke fordi at den tror den skal finde en user med id "all" når requesten bliver lavet
 exports.getAllUsers = (req, res) => {
-  executeSQL(`SELECT * FROM users`)
+  executeSQL('SELECT * FROM users')
   .then(response => {
     return res.status(200).json(response);
   })
@@ -122,7 +123,7 @@ exports.addLiked = (req, res) => {
       return res.status(200).json(response);
     })
     .catch(error => {
-      //denne fejlbesked virker ikke
+      //denne fejlbesked virker ikke -- den virker nu, der var en fejl i sql koden som ikke "rejectede" "promise"
       if (error.message.includes("Cannot insert duplicate key")) {
         // Duplicate row detected, return error to client
         return res.status(400).send("User already liked this article");
@@ -139,13 +140,16 @@ exports.unlike = (req, res) => {
   const {userID, articleID} = req.body
   executeSQL(`DELETE FROM likes WHERE userID = ${userID} AND articleID = ${articleID}`)
   .then(response => {
-    return res.status(200).send(("User deleted."))
+    return res.status(200).send(("Like removed"))
   })
   .catch(error =>{
     console.log(error)
     return res.status(500).send(error)
   })
 }
+
+
+//Denne vil jeg mene hører til i news controlleren
 //Gets all likes from likes table for specific articleid (Virker ikke)
 exports.countLikes = (req, res) => {
   const {articleID} = req.params;
