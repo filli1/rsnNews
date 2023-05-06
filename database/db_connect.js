@@ -23,7 +23,7 @@ function executeSQL(query) {
                         if (query.trim().toUpperCase().startsWith("SELECT")) {
                             resolve(response);
                         } else if (query.trim().toUpperCase().startsWith("INSERT INTO USERS")){
-                            resolve({message: "User added to database"});
+                            resolve(response);
                         } else if (
                             query.trim().toUpperCase().startsWith("UPDATE") &&
                             rowCount === 0 || query.trim().toUpperCase().startsWith("DELETE") && rowCount === 0
@@ -46,7 +46,11 @@ function executeSQL(query) {
                         response[counter] = {}
                         //for each column in the row, it adds the column name and value to the response object
                         columns.forEach(function(column){
+                            let colName = column.metadata.colName
+                            colName = colName == "" || colName == undefined ? "noColName" : colName;
+                            column.metadata.colName = colName
                             response[counter][column.metadata.colName] = column.value
+                            //console.log(response)
                         })
                         //increments the counter by 1
                         counter += 1;

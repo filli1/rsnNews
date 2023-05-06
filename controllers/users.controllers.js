@@ -101,6 +101,7 @@ exports.getUser = (req, res) => {
     return res.status(500).send(error)
   })
 }
+
 //Gets all users from the database VIRKER IKKE giver error 404 user not found?
 exports.getAllUsers = (req, res) => {
   executeSQL(`SELECT * FROM users`)
