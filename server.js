@@ -18,7 +18,7 @@ app.use(cors({
     allowedHeaders: ['country', 'Authorization'],
     methods: ['GET'],
     optionsSuccessStatus: 204,
-    origin: ['https://api.open-meteo.com/v1/forecast','https://newsapi.org/v2/top-headlines']
+    origin: ['http://localhost:3001','http://127.0.0.1:3001']
 }))
 
 app.use(express.json());
