@@ -123,7 +123,6 @@ exports.addLiked = (req, res) => {
       return res.status(200).json(response);
     })
     .catch(error => {
-      //denne fejlbesked virker ikke -- den virker nu, der var en fejl i sql koden som ikke "rejectede" "promise"
       if (error.message.includes("Cannot insert duplicate key")) {
         // Duplicate row detected, return error to client
         return res.status(400).send("User already liked this article");
@@ -135,7 +134,7 @@ exports.addLiked = (req, res) => {
 }
 
 
-//Removes liked article from likes table VIRKER IKKE 
+//Removes liked article from likes table 
 exports.unlike = (req, res) => {
   const {userID, articleID} = req.body
   executeSQL(`DELETE FROM likes WHERE userID = ${userID} AND articleID = ${articleID}`)
@@ -146,26 +145,6 @@ exports.unlike = (req, res) => {
     console.log(error)
     return res.status(500).send(error)
   })
-}
-
-
-//Denne vil jeg mene hører til i news controlleren
-//Gets all likes from likes table for specific articleid (Virker ikke)
-exports.countLikes = (req, res) => {
-  const {articleID} = req.params;
-  executeSQL(`SELECT COUNT(*) as count FROM likes WHERE articleID=${articleID}`)
-    .then(result => {
-      if (result.rowsAffected > 0) {
-        const count = result.recordset[0].count;
-        return res.status(200).json({count});
-      } else {
-        return res.status(404).send("Article not found");
-      }
-    })
-    .catch(error => {
-      console.log(error);
-      return res.status(500).send(error);
-    });
 }
 
 

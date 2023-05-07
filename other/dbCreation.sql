@@ -44,6 +44,11 @@ CREATE TABLE likes (
     articleID int,
     FOREIGN KEY (userID) REFERENCES users(userID), --Defines foreign key which refers to the user table.
     FOREIGN KEY (articleID) REFERENCES news(articleID) --Defines foreign key which refers to the news table.
+
+)
+
+ALTER TABLE likes (
+    ADD CONSTRAINT unique_like_pair UNIQUE (userID, articleID); --Adds 
 )
 
 
