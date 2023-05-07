@@ -32,14 +32,25 @@ router.delete('/likes', (req, res) => {
   return userController.unlike(req, res);
 });
 
+router.post('/favourite', (req, res) => {
+  return userController.addFavourite(req, res);
+});
+
+router.delete('/favourite', (req, res) => {
+  return userController.unfave (req, res);
+})
+
+router.get('/favourite', (req, res) =>{
+  return userController.getFaves (req, res);
+})
 
 router.post('/read', (req, res) => {
   return userController.addRead(req, res);
 });
 
-router.post('/favourite', (req, res) => {
-  return userController.addFavourite(req, res);
-});
+router.get('/read', (req, res) => {
+  return userController.getRead(req, res);
+})
 
 module.exports = router;
 

@@ -19,4 +19,8 @@ router.get('/search/:searchString', (req, res) => {
     return newsController.searchArticles(req, res);
 });
 
+router.get('/s', (req, res) => {
+    return newsController.getArticleByID(req, res);
+})
+
 module.exports = router;

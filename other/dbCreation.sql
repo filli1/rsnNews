@@ -47,10 +47,6 @@ CREATE TABLE likes (
 
 )
 
-ALTER TABLE likes (
-    ADD CONSTRAINT unique_like_pair UNIQUE (userID, articleID); --Adds 
-)
-
 
 -- readArticles table
 
