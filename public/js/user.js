@@ -8,6 +8,7 @@ function userClick() {
             //if logged in, find the username in the cookie
             let user = getCookies().username
             user = getUser(user)
+            console.log(user)
             //Display a popup with userdetails
             userDetailsPopup(user[1])
             displayPopup()
@@ -115,9 +116,12 @@ function updateUserDetails(user){
         let formProbs = Object.fromEntries(formData)   
         // --- Until here ^ 
         
+        let reqBody = {}
+        console.log(formProbs)
         //for each probery sent in the form, update the user with the updateUser function in login.js
         for(const proberty in formProbs){
             if (proberty != 'username'){
+                reqBody[proberty] = formProbs[proberty]
                 updateUser(user.name,proberty,formProbs[proberty])
             }
         }

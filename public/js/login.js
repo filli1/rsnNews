@@ -2,55 +2,57 @@
 
 
 //Logs a user in
-function login(username) {
+function login(email) {
     //Determines if a user is logged in.
     if(!loggedIn()){
         //If the user is not logged in, it checks whether a user with that username exists.
-        if(getUsers().array.includes(username)){
-            //if the username exists it sets a cookie with the username with expiry tomorrow.
-            let today = new Date()
-            let tomorrow = new Date()
-            tomorrow.setDate(today.getDate()+1)
+        let user = getUser(email)
+            .then((user) => {
+                console.log(user)
+                let today = new Date()
+                let tomorrow = new Date()
+                tomorrow.setDate(today.getDate()+1)
+                //sets the cookie
+                document.cookie = `email=${email}; expires=${tomorrow}`
+                document.cookie = `firstName=${user["1"].firstName}; expires=${tomorrow}`
+                console.log(`${email} logged in.`)
 
-            //Set cookie
-            document.cookie = `username=${username}; expires=${tomorrow}`
-            console.log(`${username} logged in.`)
+                //Displays username
+                document.getElementById("user").innerHTML = user["1"].firstName;
+                //these functions adds the favourite "hearts" and the articles already read. These are uer specific.
+                addAlreadyReadElement()
+                addFavouriteElement()
+                userDetailsFormAdded=false
 
-            document.getElementById("user").innerHTML = username;
-
-            //these functions adds the favourite "hearts" and the articles already read. These are uer specific.
-            addAlreadyReadElement()
-            addFavouriteElement()
-            userDetailsFormAdded=false
-
-            //returns true
-            return true
-        } else {
-            //logs an error if the user does not exist
-            console.error(`User: ${username} does not exist.`)
-            return (`User: ${username} does not exist.`)
-        }
+                //returns true
+                return true
+            })
+            .catch((err) => {
+                throw new Error(`Email: ${email} does not exist.`)
+            })
     } else {
         //logs an error if there already is a user logged in
-        console.error(`${getCookies().username} is already logged in. Log this user out to log in as other user.`)
-        return (`${getCookies().username} is already logged in. Log this user out to log in as other user.`)
+        console.error(`${getCookies().email} is already logged in. Log this user out to log in as other user.`)
+        return (`${getCookies().email} is already logged in. Log this user out to log in as other user.`)
     }
 }
 
 //Logs a user out
-function logout(username){
+function logout(email){
     //Checks if there is anybody logged in and that the username in the param is equal to the cookie user
-    if(loggedIn() && username===getCookies().username){
+    if(loggedIn() && email===getCookies().email){
         let today = new Date()
         let yesterday = new Date()
         yesterday.setDate(today.getDate()-365)
+        const cookies = getCookies()
 
 
         //Deletes cookie if the user is logged in
-        document.cookie = `username=${username}; expires=${yesterday}`
-        console.log(`${username} logged out.`)
+        document.cookie = `email=; expires=${yesterday.toUTCString()}; path =/`
+        document.cookie = `firstName=; expires=${yesterday.toUTCString()}; path=/`
+        console.log(`${email} logged out.`)
         loginFormAdded = false
-        document.getElementById("user").innerHTML = username;
+        document.getElementById("user").innerHTML = email;
 
         //This removes the favourite elements from the DOM
         deleteFavouriteElements()
@@ -59,7 +61,7 @@ function logout(username){
         setUserName()
     } else {
         //Logs an error if the user (param) is not logged in
-        console.error(`User: ${username} not logged in. User: ${getCookies().username} is currently logged in.`)
+        console.error(`User: ${email} not logged in. User: ${getCookies().email} is currently logged in.`)
     }
     
 }
@@ -78,7 +80,7 @@ function getCookies(){
             let thisCookie = cookies[x].split('=');
             //the first value being the name of the cookie set
             let thisCookieName = thisCookie[0]
-            //the second being the value of the cookie set. Here we put the name of the cookie into the object as the proberty and the value of the cookie as the value of the object proberty.
+            //the second being the value of the cookie set. Here we put the name of the cookie into the object as the property and the value of the cookie as the value of the object property.
             cookieObj[thisCookieName] = thisCookie[1]
         }
         //returns the object
@@ -90,7 +92,7 @@ function getCookies(){
 
 //Checks whether any user is logged in 
 function loggedIn(){
-    let username = getCookies().username
+    let username = getCookies().email
     if(username===undefined){
         return false
     } else {
@@ -123,33 +125,35 @@ function getUsers(){
 }
 
 //Creates a user
-function createUser(username,password){
-    let users = getUsers();
-
-    //Get list of users as objects
-    let userList = users.obj
-
-    //Get list of usernames as an array
-    let usernames = users.array
-
-    //Checks if the username already exists
-    if(!usernames.includes(username)){
-        //creates the initial user object
-        let user = {
-            name: username,
-            password: password
-        }
-        //pushes the new user into the whole user array
-        userList.push(user)
-    
-        //Sets the localstorage to the updates userlist.
-        localStorage.setItem('users', JSON.stringify(userList))
-        return true
-    } else {
-        //logs an error if the user already exists.
-        console.error('User is already created')
-        return 'User is already created'
-    }
+async function createUser(email,password){
+    const addUser = async () => {
+        try {
+            const user = {
+                firstName: null,
+                lastName: null,
+                email: email,
+                password: password,
+                nationality: null
+            }
+            let response = await fetch('/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(user)
+            })
+            if (!response.ok) {
+                throw new Error(`Failed to load resource: the server responded with a status of ${response.status} (${response.statusText})`);
+              }
+              const data = await response.json();
+              return data
+            } catch (error) {
+                throw new Error(error)
+            }
+          };
+          
+          let userID = await addUser();
+          return userID
 }
 
 //Deletes a user
@@ -175,8 +179,8 @@ function deleteUser(username){
     }
     
 }
-
-//Updates a specific user with any proberty to any value
+// Supposed to be moved into the User.js file
+//Updates a specific user with any property to any value
 function updateUser(username,property='',value=''){
 
     //retrieves all users
@@ -196,7 +200,7 @@ function updateUser(username,property='',value=''){
         //retrieves the user that should be updated as an object
         let userToUpdate = userObj[updateUserAtIndex]
 
-        //Either creates or updates the user depending if the proberty was already existing.
+        //Either creates or updates the user depending if the property was already existing.
         userToUpdate[property] = value;
 
         //corrects the updated user in the user Obj
@@ -211,49 +215,47 @@ function updateUser(username,property='',value=''){
 }
 
 //Gets information about a specific user
-function getUser(username){
-    //array of all users
-    let users = getUsers()
-
-    let userObj = users.obj
-    let userArray = users.array
-
-    //if the user exists
-    if(userArray.includes(username)){
-        //returns the user as an object with all the set proberties. The true indicates that the user was found.
-        let getUserAtIndex = userArray.indexOf(username)
-        return [true,userObj[getUserAtIndex]]
-    } else {
-        console.error(`User: ${username} does not exist.`)
-        return (`User: ${username} does not exist.`)
-    }
+async function getUser(email){
+    const fetchUser = async () => {
+        try {
+            let response = await fetch(`/users/s/${email}`, {
+                method: 'GET'
+            })
+            if (!response.ok) {
+                throw new Error(`Failed to load resource: the server responded with a status of ${response.status} (${response.statusText})`);
+              }
+              const data = await response.json();
+              return data
+            } catch (error) {
+                console.error(error)
+                throw new Error(error)
+            }
+          };
+          
+          let user = await fetchUser();
+          return user
 }
 
 //Checks if the password in the param aligns with the one set in the localstorage
 function checkPassword(username, password) {
     //gets the user
     let user = getUser(username)
-    //checks if the user exists
-    if (user[0]===true){
-        //if the password aligns
-        if(password === user[1].password){
-            //then login the username
-            let success = login(username)
-            if(success===true){
-                return true
+        .then(user =>  {
+            if(password === user["1"].password) {
+                let success = login(username)
+                if(success===true){
+                    return true
+                } else {
+                    return success
+                }
             } else {
-                return success
+                console.error("Password incorrect")
+                return 'Password incorrect'
             }
-            
-        } else {
-            //Logs an error + returns an error
-            console.error("Password incorrect")
-            return 'Password incorrect'
-        }
-    } else {
-        //returns that the user does not exist
-        return user
-    }
+        })
+        .catch(error => {
+            throw new Error("User does not exist")
+        })
 }
 //makes sure that the loginform cant be added more than once each time the
 let loginFormAdded = false;
@@ -351,16 +353,22 @@ function loginformEventListener() {
         } else {
             //Creates a user
             let success = createUser(formProbs.usernameInput, formProbs.passwordInput)
+                .then(result => {
+                    //checks if the user was created
+                    console.log(result)
+                    if(result===true){
+                        login(result)
+                        closePopup()
+                        clearPopup()
+                    }
+                })
+                .catch(error => {
+                    popupError(error)
+                    console.log(error)
+                    console.error(error)
+                })
 
-            //checks if the user was created
-            if(success===true){
-                login(formProbs.usernameInput)
-                closePopup()
-                clearPopup()
-            } else {
-                //puts an error message in the popup
-                popupError(success)
-            }
+            
             
         }
     })

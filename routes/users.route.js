@@ -16,7 +16,7 @@ router.put('/s/:userID', (req, res) => {
   return userController.updateUser(req, res);
 });
 
-router.get('/s/:userID', (req, res) => {
+router.get('/s/:email', (req, res) => {
   return userController.getUser(req, res);
 });
 

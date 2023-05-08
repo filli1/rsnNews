@@ -17,7 +17,13 @@ exports.createUser = (req, res) => {
       const count = result['1'].count;
       if (count === 0) {
         // email does not exist in the database, proceeds with creating the user
-        createUser();
+        createUser()
+          .then(result => {
+            return res.status(200).send(result);
+          })
+          .catch(error => {
+            return res.status(500).send("Error");
+          });
       } else {
         // email already exists in the database, return error
         return res.status(400).send("Email already exists in the database");
@@ -34,10 +40,12 @@ exports.createUser = (req, res) => {
                 OUTPUT INSERTED.userID
                 VALUES ('${userInfo.firstName}', '${userInfo.lastName}', '${userInfo.email}', '${userInfo.password}', '${userInfo.nationality}')`)
       .then(result => {
-        return res.status(200).send(result);
+        return result
+        //return res.status(200).send(result);
       })
       .catch(error => {
-        return res.status(500).send("Error");
+        throw new Error(error)
+        //return res.status(500).send("Error");
       });
   }
 }
@@ -71,7 +79,15 @@ exports.updateUser = (req, res) => {
     password : req.body.password,
     nationality : req.body.nationality
   }
-executeSQL(`UPDATE users SET firstName = '${userInfo.firstName}', lastName = '${userInfo.lastName}', email = '${userInfo.email}', password = '${userInfo.password}', nationality = '${userInfo.nationality}' WHERE userID = ${userID}`)
+  let SQLquery = `UPDATE users SET `;
+  userInfo.forEach((value, key) => {
+    if (value) {
+      SQLquery += `${key} = '${value}', `
+    }
+  })
+  SQLquery = SQLquery.slice(0, -2);
+  SQLquery += ` WHERE userID = ${userID}`
+executeSQL(SQLquery)
 .then(result => {
   return res.status(200).send("User updated")
 })
@@ -87,10 +103,12 @@ executeSQL(`UPDATE users SET firstName = '${userInfo.firstName}', lastName = '${
 
 //Gets a user from the database from userID and returns user info as JSON
 exports.getUser = (req, res) => {
-  const userID = req.params.userID;
-  executeSQL(`SELECT * FROM users WHERE userID = ${userID}`)
+  const email = req.params.email;
+  console.log(email)
+  executeSQL(`SELECT * FROM users WHERE email = '${email}'`)
   .then(result => {
     const userarray = Object.keys(result);
+    console.log(result)
     if (userarray.length === 0) {
       return res.status(404).send("User not found")
     }
