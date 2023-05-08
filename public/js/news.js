@@ -30,7 +30,6 @@ const newsFeed = async () => {
     newsArray = (await news());
     //puts the newsarray inside the session storage for access elsewhere
     sessionStorage.setItem("newsArray", JSON.stringify(newsArray));
-    console.log(Object.keys(newsArray))
     if (Object.keys(newsArray).length === 0){
         alert("Der er ingen artikler der matcher din søgning, du bliver ført tilbage til forsiden")
         newsUrl = `http://localhost:3001/news/frontpage`
@@ -41,7 +40,6 @@ const newsFeed = async () => {
     for(let x=1; x<(newsArray.totalResults < 8? newsArray.totalResults : 8);x++){
         //gets the current iterations article
         let article = newsArray[x]
-        console.log(newsArray)
         //if this is the first iteration, then set the spotligt article to the first article in the array
         if(x===1){
             spotSource.innerHTML = '- '+article.source;
@@ -54,7 +52,6 @@ const newsFeed = async () => {
             articleElement.setAttribute('class','article borderStyle flexCol flexGrow')
             articleContainer.appendChild(articleElement);
             articleElement.setAttribute('id', article.url)
-            console.log(article)
             const img = document.createElement("img")
             img.setAttribute('src', article.imageUrl)
             articleElement.appendChild(img);
@@ -179,7 +176,6 @@ function deleteFavouriteArticle(user,url){
 
 //This is a popup containing the article which is referred to in the parameter
 function articlePopup(newsArticle){
-    console.log(newsArticle)
     //Gets the popup element
     let popup = document.getElementById("popupContent")
     

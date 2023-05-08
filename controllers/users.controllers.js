@@ -120,8 +120,7 @@ exports.getUser = (req, res) => {
   })
 }
 
-//Gets all users from the database VIRKER IKKE giver error 404 user not found?
-//denne virker ikke fordi at den tror den skal finde en user med id "all" når requesten bliver lavet
+//Gets all users from the database 
 exports.getAllUsers = (req, res) => {
   executeSQL('SELECT * FROM users')
   .then(response => {
@@ -179,9 +178,35 @@ exports.addFavourite = (req, res) => {
       
     });
 }
-//Removes favourite - laves når det virker med likes
+//Removes favourite 
+exports.unfave = (req, res) => {
+  const {userID, articleID} = req.body
+  executeSQL(`DELETE FROM favouriteArticles WHERE userID = ${userID} AND articleID = ${articleID}`)
+  .then(response => {
+    return res.status(200).send(("Favourite removed"))
+  })
+  .catch(error =>{
+    console.log(error)
+    return res.status(500).send(error)
+  })
+}
 
-//Gets all favourites - laves når det virker med likes
+//Gets all favourites for specified user
+exports.getFaves = (req, res) => {
+  const {userID} = req.body
+  executeSQL(`SELECT articleID FROM favouriteArticles WHERE userID = ${userID}`)
+  .then(response => {
+    const articleIDs = [];
+    for (const key in response) {
+      articleIDs.push(response[key].articleID);
+    }
+    return res.status(200).send(articleIDs);
+  })
+  .catch(error =>{
+    console.log(error)
+    return res.status(500).send(error)
+  })
+}
 
 //Adds read article
 exports.addRead = (req, res) => {
@@ -195,4 +220,21 @@ exports.addRead = (req, res) => {
         return res.status(500).send(error);
       }
     );
+}
+
+//Gets all read articles for specified user
+exports.getRead = (req, res) => {
+  const {userID} = req.body
+  executeSQL(`SELECT articleID FROM readArticles WHERE userID = ${userID}`)
+  .then(response => {
+    const articleIDs = [];
+    for (const key in response) {
+      articleIDs.push(response[key].articleID);
+    }
+    return res.status(200).send(articleIDs);
+  })
+  .catch(error =>{
+    console.log(error)
+    return res.status(500).send(error)
+  })
 }

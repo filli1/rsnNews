@@ -51,3 +51,17 @@ exports.searchArticles = (req, res) => {
             return res.status(500).send("Error");
         })
 };
+
+exports.getArticleByID = (req, res) => {
+    const { articleIDs } = req.body; 
+    const articleIDsString = articleIDs.join(',');
+    executeSQL(`SELECT * FROM news WHERE articleID IN (${articleIDsString})`)
+        .then(result => {
+            return res.status(200).send(result);
+        })
+        .catch(error => {
+            console.log(error);
+            return res.status(500).send(error);
+        });
+};
+
