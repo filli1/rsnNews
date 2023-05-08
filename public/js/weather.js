@@ -130,8 +130,7 @@ const getWeather = async () => {
 const insertWeather = async () => {
     //Gets the weather
     let weather = await getWeather();
-    console.log('Weather:', weather);
-    console.log('Forecast:', weather.forecast);
+
     //Current weather
     let weatherSymbolNow = document.getElementById("weatherSymbol")
     weatherSymbolNow.setAttribute('src',weather.now.weatherCondition[1])
