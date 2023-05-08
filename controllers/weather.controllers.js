@@ -17,7 +17,6 @@ exports.getForecast = (req, res) => {
                 let sunriseThisDay = new Date(result[element].sunrise)
                 sunriseThisDay.setHours(sunriseThisDay.getHours() + 1)
                 sunriseThisDay = sunriseThisDay.toLocaleTimeString('da-DK', { timeZone: 'Europe/Copenhagen' })
-
                 let sunsetThisDay = new Date(result[element].sunset)
                 sunsetThisDay.setHours(sunsetThisDay.getHours() + 1)
                 sunsetThisDay = sunsetThisDay.toLocaleTimeString('da-DK', { timeZone: 'Europe/Copenhagen' })
