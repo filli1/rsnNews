@@ -38,8 +38,12 @@ exports.getLikes = (req, res) => {
 //Searchs on articles
 exports.searchArticles = (req, res) => {
     const searchString = req.params.searchString;
-    executeSQL(`SELECT * FROM news WHERE title LIKE '%${searchString}%' 
-    OR description LIKE '%${searchString}%'`)
+    const from = req.params.from;
+    const to = req.params.to;
+    let query = `SELECT * FROM news WHERE title LIKE '%${searchString}%' OR description LIKE '%${searchString}%'`
+    from ? query += ` AND publishedAt >= '${from}'` : null;
+    to ? query += ` AND publishedAt <= '${to}'` : null;
+    executeSQL(query)
         .then(result => {
             return res.status(200).send(result);
         })

@@ -15,7 +15,7 @@ router.get('/likes/:articleID', (req, res) => {
     return newsController.getLikes(req, res);
 });
 
-router.get('/search/:searchString', (req, res) => {
+router.get('/search/:searchString?/:from?/:to?', (req, res) => {
     return newsController.searchArticles(req, res);
 });
 

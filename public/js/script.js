@@ -25,25 +25,27 @@ window.addEventListener("DOMContentLoaded", () => {
         let formData = new FormData (event.target);
         let formProbs = Object.fromEntries(formData)  
         // --- Until here ^  
-
+ 
         searchParameter = '';
         //Makes sure that the & is only added after the first time
         let iterationCount = 1;
         //makes the new search url
-        for(proberty in formProbs){
-            //For each proberty/Input where the value is not blank, add it to the newsURL
-            if (formProbs[proberty] != ''){
-                //Makes sure that the & is only added after the first time
-                let addAnd = iterationCount===1?"":"&"
-                searchParameter += addAnd+proberty+"="+formProbs[proberty]
-                iterationCount += 1;
-            }
-        }
-        
-        //searchParameter = `q=${formProbs.search}`
-        newsUrl = `https://newsapi.org/v2/everything?${searchParameter}`
+        //First it checks if all the proberties is filled
+        let searchText = formProbs["q"] == "" ? undefined : formProbs["q"];
+        let from = formProbs["from"] == "" ? undefined : formProbs["from"];
+        let to = formProbs["to"] == "" ? undefined : formProbs["to"];
+        searchParameter = searchText
+        //This adds the & to the searchParameter if it is not undefined
+        from ? searchParameter += `/${from}` : null;
+        to ? searchParameter += `/${to}` : null;
+        //This adds the searchParameter to the url
+        newsUrl = `http://127.0.0.1:3001/news/search/${searchParameter}`
         //This clears the article seaction
         document.getElementById('articles').innerHTML = ''
+        document.getElementById("spotSource").innerHTML = ''
+        document.getElementById("spotTitle").innerHTML = 'Ingen artikler fundet'
+        document.getElementById("spotlight").style.backgroundImage = ''
+        document.getElementById("spotCategory").innerHTML = ''
 
         //Search, retrieve and show the new articles articles
         newsFeed()

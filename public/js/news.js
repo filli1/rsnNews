@@ -1,22 +1,14 @@
 //API KEY: a3a9b3bf13f043f890b1335b08ec09b1
 //NY API: 4d438c96e5c54b938fe57e7e8626fe0b
 //Initial search
-let searchParameter = 'country=de'
-let newsUrl = `https://newsapi.org/v2/top-headlines?${searchParameter}`
 
-//Optimally would be located in a non-public document
-let apiKey = '4d438c96e5c54b938fe57e7e8626fe0b'
-
-let headers = {
-    'Authorization': `${apiKey}`
-}
+let newsUrl = `http://localhost:3001/news/frontpage`
 
 //Fetches the news from the news api
 const news = async () => {
     let response = await fetch(newsUrl,
         {
-            method: 'GET',
-            headers: headers
+            method: 'GET'
         }
     );
     return response.json();
@@ -38,16 +30,23 @@ const newsFeed = async () => {
     newsArray = (await news());
     //puts the newsarray inside the session storage for access elsewhere
     sessionStorage.setItem("newsArray", JSON.stringify(newsArray));
+    console.log(Object.keys(newsArray))
+    if (Object.keys(newsArray).length === 0){
+        alert("Der er ingen artikler der matcher din søgning, du bliver ført tilbage til forsiden")
+        newsUrl = `http://localhost:3001/news/frontpage`
+        newsArray = (await news());
+    }
     
     //Loop through up to 7 items of the news array - depending on if there are less than 7
-    for(let x=0; x<(newsArray.totalResults < 7? newsArray.totalResults : 7);x++){
+    for(let x=1; x<(newsArray.totalResults < 8? newsArray.totalResults : 8);x++){
         //gets the current iterations article
-        let article = newsArray.articles[x]
+        let article = newsArray[x]
+        console.log(newsArray)
         //if this is the first iteration, then set the spotligt article to the first article in the array
-        if(x===0){
-            spotSource.innerHTML = '- '+article.source.name;
+        if(x===1){
+            spotSource.innerHTML = '- '+article.source;
             spotTitle.innerHTML = article.title;
-            spotlight.style.backgroundImage = `url('${article.urlToImage}')`;
+            spotlight.style.backgroundImage = `url('${article.imageUrl}')`;
             spotBtn.setAttribute('href', article.url)
         } else {
             //creates the news article elements and childs
@@ -57,7 +56,7 @@ const newsFeed = async () => {
             articleElement.setAttribute('id', article.url)
             console.log(article)
             const img = document.createElement("img")
-            img.setAttribute('src', article.urlToImage)
+            img.setAttribute('src', article.imageUrl)
             articleElement.appendChild(img);
 
             //This decides if the title is too long to fit inside the container. Max 10 words.
@@ -83,7 +82,7 @@ const newsFeed = async () => {
 
             const sourceElement = document.createElement("a")
             sourceElement.setAttribute('class', 'source')
-            const source = document.createTextNode(article.source.name)
+            const source = document.createTextNode(article.source)
             sourceElement.appendChild(source)
             miscElement.appendChild(sourceElement)
 
@@ -103,7 +102,7 @@ const newsFeed = async () => {
         readMoreBtns[x].addEventListener('click', (event) => {
             event.preventDefault()
             displayPopup()
-            articlePopup(newsArray.articles[x])
+            articlePopup(newsArray[x+1])
         })
     }
     //now decide if there are any of the article that should be favourited and/or is already read.
@@ -180,6 +179,7 @@ function deleteFavouriteArticle(user,url){
 
 //This is a popup containing the article which is referred to in the parameter
 function articlePopup(newsArticle){
+    console.log(newsArticle)
     //Gets the popup element
     let popup = document.getElementById("popupContent")
     
@@ -195,7 +195,7 @@ function articlePopup(newsArticle){
 
     //Creates the content of the article
     let articleContentElement = document.createElement("p")
-    let articleContentText = document.createTextNode(newsArticle.content)
+    let articleContentText = document.createTextNode(newsArticle.description)
     articleContentElement.appendChild(articleContentText)
 
     //Creates a link to go to the source
@@ -207,7 +207,7 @@ function articlePopup(newsArticle){
 
     //Creates the image
     let articleImg = document.createElement('img')
-    articleImg.setAttribute('src', newsArticle.urlToImage)
+    articleImg.setAttribute('src', newsArticle.imageUrl)
     articleImg.setAttribute('width', '100%')
     
     //Adds all the elements to the popup
