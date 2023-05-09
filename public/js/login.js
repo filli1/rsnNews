@@ -2,41 +2,30 @@
 
 
 //Logs a user in
-function login(email) {
-    //Determines if a user is logged in.
-    if(!loggedIn()){
-        //If the user is not logged in, it checks whether a user with that username exists.
-        let user = getUser(email)
-            .then((user) => {
-                console.log(user[1])
-                let today = new Date()
-                let tomorrow = new Date()
-                tomorrow.setDate(today.getDate()+1)
-                //sets the cookie
-                document.cookie = `email=${email}; expires=${tomorrow}`
-                document.cookie = `firstName=${user[1].firstName}; expires=${tomorrow}`
-                document.cookie = `userID=${user[1].userID}; expires=${tomorrow}`
-                console.log(`${email} logged in.`)
-
-                //Displays username
-                document.getElementById("user").innerHTML = user["1"].firstName;
-                //these functions adds the favourite "hearts" and the articles already read. These are uer specific.
-                //addAlreadyReadElement()
-                //addFavouriteElement()
-                userDetailsFormAdded=false
-
-                //returns true
-                return true
-            })
-            .catch((err) => {
-                throw new Error(`Email: ${email} does not exist.`)
-            })
+async function login(email) {
+    if (!loggedIn()) {
+        try {
+            const user = await getUser(email);
+            console.log(user[1]);
+            let today = new Date();
+            let tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1);
+            document.cookie = `email=${email}; expires=${tomorrow}`;
+            document.cookie = `firstName=${user[1].firstName}; expires=${tomorrow}`;
+            document.cookie = `userID=${user[1].userID}; expires=${tomorrow}`;
+            console.log(`${email} logged in.`);
+            document.getElementById("user").innerHTML = user["1"].firstName;
+            userDetailsFormAdded = false;
+            return true;
+        } catch (error) {
+            throw new Error(`Email: ${email} does not exist.`);
+        }
     } else {
-        //logs an error if there already is a user logged in
-        console.error(`${getCookies().email} is already logged in. Log this user out to log in as other user.`)
-        return (`${getCookies().email} is already logged in. Log this user out to log in as other user.`)
+        console.error(`${getCookies().email} is already logged in. Log this user out to log in as other user.`);
+        return `${getCookies().email} is already logged in. Log this user out to log in as other user.`;
     }
 }
+
 
 //Logs a user out
 function logout(email){
@@ -217,6 +206,7 @@ function updateUser(username,property='',value=''){
 
 //Gets information about a specific user
 async function getUser(email){
+    console.log(email)
     const fetchUser = async () => {
         try {
             let response = await fetch(`/users/s/${email}`, {
@@ -238,26 +228,29 @@ async function getUser(email){
 }
 
 //Checks if the password in the param aligns with the one set in the localstorage
-function checkPassword(username, password) {
-    //gets the user
-    let user = getUser(username)
-        .then(user =>  {
-            if(password === user["1"].password) {
-                let success = login(username)
-                if(success===true){
-                    return true
-                } else {
-                    return success
-                }
-            } else {
-                console.error("Password incorrect")
-                return 'Password incorrect'
-            }
-        })
-        .catch(error => {
-            throw new Error("User does not exist")
-        })
-}
+async function checkPassword(username, password) {
+    try {
+      // get the user
+      const user = await getUser(username);
+  
+      // check the password
+      if (password === user[1].password) {
+        // log in the user
+        const success = await login(username);
+        if (success === true) {
+          return true;
+        } else {
+          throw new Error("Failed to log in.");
+        }
+      } else {
+        throw new Error("Password incorrect");
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error(error.message);
+    }
+  }
+  
 //makes sure that the loginform cant be added more than once each time the
 let loginFormAdded = false;
 
@@ -330,55 +323,56 @@ function switchToCreateUser() {
 
 //adds an eventlistener to the login form
 function loginformEventListener() {
-    const loginform = document.getElementById("loginform")
+    const loginform = document.getElementById("loginform");
     loginform.addEventListener("submit", (event) => {
-        event.preventDefault();
-        //This code is taken from https://stackoverflow.com/questions/3547035/getting-html-form-values/66407161#66407161
-        let formData = new FormData (event.target);
-        let formProbs = Object.fromEntries(formData)    
-        // --- Until here ^
-        let action = formProbs.type
-
-        //Checks which action to take
-        if(action === 'login'){
-            //Checks the password
-            console.log(formProbs)
-            let success = checkPassword(formProbs.usernameInput, formProbs.passwordInput)
-            if(success===true){
-                //Closes the popup on success
-                closePopup()
-                clearPopup()
+      event.preventDefault();
+      // get the form data
+      const formData = new FormData(event.target);
+      const formProbs = Object.fromEntries(formData);
+  
+      // check which action to take
+      const action = formProbs.type;
+      if (action === "login") {
+        // check the password
+        checkPassword(formProbs.usernameInput, formProbs.passwordInput)
+          .then((success) => {
+            if (success === true) {
+              closePopup();
+              clearPopup();
             } else {
-                //puts an error in the popop Box
-                popupError(success)
+              popupError(success);
             }
-        } else {
-            //Creates a user
-            let success = createUser(formProbs.usernameInput, formProbs.passwordInput)
-                .then(result => {
-                    //checks if the user was created
-                    console.log(result)
-                    if(result===true){
-                        login(result)
-                        closePopup()
-                        clearPopup()
-                    }
-                })
-                .catch(error => {
-                    popupError(error)
-                    console.log(error)
-                    console.error(error)
-                })
-
-            
-            
-        }
-    })
-
-    //event listener for create user instead
-    let createUserInstead = document.getElementById("createUserInstead")
+          })
+          .catch((error) => {
+            popupError(error.message);
+            console.error(error);
+          });
+      } else {
+        // create a user
+        createUser(formProbs.usernameInput, formProbs.passwordInput)
+          .then((email) => {
+            // log in the user with the newly created email address
+            return login(email);
+          })
+          .then((success) => {
+            if (success === true) {
+              closePopup();
+              clearPopup();
+            } else {
+              popupError("Failed to log in.");
+            }
+          })
+          .catch((error) => {
+            popupError(error.message);
+            console.error(error);
+          });
+      }
+    });
+  
+    // add event listener for "Create User Instead" button
+    const createUserInstead = document.getElementById("createUserInstead");
     createUserInstead.addEventListener("click", () => {
-        switchToCreateUser();
-    })
-
-}
+      switchToCreateUser();
+    });
+  }
+  

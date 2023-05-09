@@ -42,6 +42,9 @@ const newsFeed = async () => {
     for(let x=1; x<(newsArray.totalResults < 8? newsArray.totalResults : 8);x++){
         //gets the current iterations article
         let article = newsArray[x]
+        if (article.imageUrl === null){
+            article.imageUrl = 'static/img/noImg.GIF'
+        }
         //if this is the first iteration, then set the spotligt article to the first article in the array
         if(x===1){
             spotSource.innerHTML = (article.source? '- '+article.source : "");
@@ -95,7 +98,7 @@ const newsFeed = async () => {
     //add an event listener to each one of them
     for(let x=0;x<readMoreBtns.length;x++){
         readMoreBtns[x].addEventListener('click', (event) => {
-            addReadArticle(x)
+            addReadArticle(x+1)
             event.preventDefault()
             displayPopup()
             articlePopup(newsArray[x+1])

@@ -98,9 +98,9 @@ exports.updateUser = (req, res) => {
     .catch((error) => {
       console.log(error);
       if (error === "User not found") {
-        return res.status(404).send("User not found");
+        return res.status(404).send({ message: "User not found" });
       } else {
-        return res.status(500).send(error);
+        return res.status(500).send({ message: "Error updating user" });
       }
     });
 };

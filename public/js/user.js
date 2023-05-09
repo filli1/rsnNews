@@ -55,6 +55,7 @@ let userDetailsFormAdded = false;
 
 //This function creates the user details popup
 function userDetailsPopup(user){
+    console.log(user)
     let popup = document.getElementById("popupContent");
 
     //only display if the form is not already added
@@ -83,7 +84,7 @@ function userDetailsPopup(user){
         
         //actions to take when logoutBtn is clicked
         logoutBtn.addEventListener("click", () => {
-            logout(user.name);
+            logout(user.email);
             closePopup();
             clearPopup();
             setUserName();
@@ -96,7 +97,7 @@ function userDetailsPopup(user){
         popup.appendChild(deleteBtn)
 
         deleteBtn.addEventListener("click", () => {
-            logout(user.name)
+            logout(user.email)
             deleteUser(user.name)
             closePopup()
             clearPopup()
@@ -128,20 +129,18 @@ async function updateUserDetails(user) {
             body: JSON.stringify(Object.fromEntries(formData)),
           });
           if (!response.ok) {
-            throw new Error(
-              `Failed to load resource: the server responded with a status of ${response.status} (${response.statusText})`
-            );
+            let error = await response.json();
+            throw new Error(`Failed to update user: ${error.message}`);
           }
-          const data = await response.json();
-          return data;
+          return response;
         } catch (error) {
           console.error(error);
           throw new Error(error);
         }
       };
+      
   
       let updatedUser = await updateUser();
-      console.log(updatedUser);
     });
   }
   
@@ -150,45 +149,69 @@ async function updateUserDetails(user) {
 let readArticlesUrl = "http://localhost:3001/users/read/" + getCookies().userID
 
 const readArticles = async () => {
-    try {
-      let response = await fetch(readArticlesUrl, { method: 'GET' });
-      let articleIDs = await response.json();
-      // Use the array of article IDs as needed
-      console.log(articleIDs);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-console.log(readArticles)
-function addAlreadyReadElement(){
-    //First checks if logged in
-    if(loggedIn()){
-        //Find the articles that are read
-        let readArticles = getUser(getCookies().userID)[1].readArticles
-        //Takes into consideration that there are none
-        readArticles = readArticles === undefined ? JSON.stringify({url: [], title: []}) : readArticles;
-        readArticles = JSON.parse(readArticles)
-        //gets the articles that are displayed on the site
-        let newsArray = JSON.parse(sessionStorage.getItem("newsArray")).articles
-        //For each article on the site find out if it is in the already read array
-        for(let x=1; x<7; x++){
-            //Get the URL of current iterations newsarticle
-            let url = newsArray[x].url
+  try {
+    let response = await fetch(readArticlesUrl, { 
+        method: 'GET' 
+    });
+    return response.json();
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
+};
 
-            //if the current iterations article is also in found in the readArticles array
-            if(readArticles.url.includes(url)){
-                let articleElement = document.getElementById(`${url}`)
-                
-                //adds the box
-                let alreadyReadElement = document.createElement("span")
-                let alreadyReadElementText = document.createTextNode("Already read")
-                alreadyReadElement.appendChild(alreadyReadElementText)
-                alreadyReadElement.setAttribute('class', 'alreadyRead')
-                articleElement.appendChild(alreadyReadElement)
-            }
+async function addAlreadyReadElement() {
+    if (loggedIn()) {
+      try {
+        const readArticlesArray = await readArticles();
+        for (let x = 2; x < 8; x++) {
+          const id = newsArray[x].articleID;
+          const url = newsArray[x].url
+          if (readArticlesArray.includes(id)) {
+            let articleElement = document.getElementById(`${url}`)
+            const alreadyReadElement = document.createElement("span");
+            const alreadyReadElementText = document.createTextNode("Already read");
+            alreadyReadElement.appendChild(alreadyReadElementText);
+            alreadyReadElement.setAttribute("class", "alreadyRead");
+            articleElement.appendChild(alreadyReadElement);
+          }
         }
+      } catch (error) {
+        console.error(error);
+      }
     }
-}
+  }
+  
+
+// function addAlreadyReadElement(){
+//     //First checks if logged in
+//     if(loggedIn()){
+//         //Find the articles that are read
+//         let readArticles = getUser(getCookies().userID)[1].readArticles
+//         //Takes into consideration that there are none
+//         readArticles = readArticles === undefined ? JSON.stringify({url: [], title: []}) : readArticles;
+//         readArticles = JSON.parse(readArticles)
+//         //gets the articles that are displayed on the site
+//         let newsArray = JSON.parse(sessionStorage.getItem("newsArray")).articles
+//         //For each article on the site find out if it is in the already read array
+//         for(let x=1; x<7; x++){
+//             //Get the URL of current iterations newsarticle
+//             let url = newsArray[x].url
+
+//             //if the current iterations article is also in found in the readArticles array
+//             if(readArticles.url.includes(url)){
+//                 let articleElement = document.getElementById(`${url}`)
+                
+//                 //adds the box
+//                 let alreadyReadElement = document.createElement("span")
+//                 let alreadyReadElementText = document.createTextNode("Already read")
+//                 alreadyReadElement.appendChild(alreadyReadElementText)
+//                 alreadyReadElement.setAttribute('class', 'alreadyRead')
+//                 articleElement.appendChild(alreadyReadElement)
+//             }
+//         }
+//     }
+// }
 
 //this function adds the heart that can be used to favourite articles
 function addFavouriteElement() {
