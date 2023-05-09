@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const searchForm = document.getElementById("searchForm");
     searchForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        //This code is taken from https://stackoverflow.com/questions/3547035/getting-html-form-values/66407161#66407161
+        //This code is taken from https://stackoverflow.com/questions/3547035/getting-html-form-values/66407161#66407161const userID = user[1].userID;
         //Link above is found through https://hait.cbss.dk/weeks/uge-40.html
         let formData = new FormData (event.target);
         let formProbs = Object.fromEntries(formData)  

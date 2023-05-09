@@ -26,6 +26,8 @@ const newsFeed = async () => {
     const spotBtn = document.getElementById("spotReadMoreBtn");
     const articleContainer = document.getElementById("articles");
 
+   
+
     //stores the news in the newsArray
     newsArray = (await news());
     //puts the newsarray inside the session storage for access elsewhere
@@ -97,6 +99,7 @@ const newsFeed = async () => {
     //add an event listener to each one of them
     for(let x=0;x<readMoreBtns.length;x++){
         readMoreBtns[x].addEventListener('click', (event) => {
+            addReadArticle()
             event.preventDefault()
             displayPopup()
             articlePopup(newsArray[x+1])
@@ -107,30 +110,29 @@ const newsFeed = async () => {
     addFavouriteElement()
 }
 
-//this function adds an article to a users read lsit
-function addReadArticle(user,url,title){
-    
-    user = getUser(user)
-    
-    //if there are no read articles then it should create this array at the specific user
-    if(user[1].readArticles === undefined){
-        let newsArticles = {
-            url:[url],
-            title:[title]
-        }
-        //saves the object in the localstorage
-        updateUser(user[1].name,'readArticles',JSON.stringify(newsArticles))
-        //this creates the already element so it appears at the time they press the read more btn
-        addAlreadyReadElement()
-    } else {
-        //Here the difference is that it takes what is already saved in the localstorage and appends to the arrays
-        let readArticles = JSON.parse(user[1].readArticles)
-        readArticles.url.push(url)
-        readArticles.title.push(title)
-        updateUser(user[1].name,'readArticles',JSON.stringify(readArticles))
-        addAlreadyReadElement()
+// Updated function to use the new route, database, and controller
+async function addReadArticle(user, articleID) {
+    console.log(user); 
+    try {
+      const response = await fetch('http://localhost:3001/users/read', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          userID: user.userID,
+          articleID
+        })
+      });
+  
+      if (!response.ok) {
+        throw new Error('Unable to add read article');
+      }
+    } catch (error) {
+      console.log(error);
     }
-}
+  }
+  
 
 //this method is the same as the already read, just a different list for a diffenrent purpose
 function addFavouriteArticle(user,url,title){
@@ -213,6 +215,6 @@ function articlePopup(newsArticle){
     popup.appendChild(readArticleLink)
     popup.appendChild(articleImg)
 
-    //add the article to read articles
-    addReadArticle(getCookies().username,newsArticle.url,newsArticle.title)
+    // //add the article to read articles
+    // addReadArticle(getCookies().username,newsArticle.url,newsArticle.title)
 }
