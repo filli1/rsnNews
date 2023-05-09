@@ -48,7 +48,7 @@ router.post('/read', (req, res) => {
   return userController.addRead(req, res);
 });
 
-router.get('/read', (req, res) => {
+router.get('/read/:userID', (req, res) => {
   return userController.getRead(req, res);
 })
 

@@ -3,12 +3,11 @@ function userClick() {
     let userElement = document.getElementById("user")
 
     //event listener for click
-    userElement.addEventListener("click", () => {
+    userElement.addEventListener("click", async () => {
         if(loggedIn()===true){
             //if logged in, find the username in the cookie
-            let user = getCookies().username
-            user = getUser(user)
-            console.log(user)
+            let user = getCookies().email
+            user = await getUser(user)
             //Display a popup with userdetails
             userDetailsPopup(user[1])
             displayPopup()
@@ -65,9 +64,11 @@ function userDetailsPopup(user){
         popup.appendChild(userDetailsForm)
 
         //adds inputfields with a helper function
-        addInputField('username',userDetailsForm,'Username',user.name,'Username','text',true)
+        addInputField('email',userDetailsForm,'Email',user.email,'Email','text',true)
+        addInputField('firstName',userDetailsForm,'First name',user.firstName,'First name')
+        addInputField('lastName',userDetailsForm,'Last name',user.lastName,'Last name')
+        addInputField('nationality',userDetailsForm,'Nationality',user.nationality,'Nationality')
         addInputField('password',userDetailsForm,'Password',user.password,'Password')
-        addInputField('email',userDetailsForm,'Email',user.email,'Email adress')
         addInputField('submitField',userDetailsForm,false,'Update user','','submit')
 
         //creates a logoutBtn
@@ -107,34 +108,63 @@ function userDetailsPopup(user){
 }
 
 //this function updates the user details when the form is submitted
-function updateUserDetails(user){
-    let userDetailsForm = document.getElementById("userDetailsForm")
-    userDetailsForm.addEventListener("submit", (event) => {
-        event.preventDefault();
-        //This code is taken from https://stackoverflow.com/questions/3547035/getting-html-form-values/66407161#66407161 
-        let formData = new FormData (event.target);
-        let formProbs = Object.fromEntries(formData)   
-        // --- Until here ^ 
-        
-        let reqBody = {}
-        console.log(formProbs)
-        //for each probery sent in the form, update the user with the updateUser function in login.js
-        for(const proberty in formProbs){
-            if (proberty != 'username'){
-                reqBody[proberty] = formProbs[proberty]
-                updateUser(user.name,proberty,formProbs[proberty])
-            }
+async function updateUserDetails(user) {
+    let userDetailsForm = document.getElementById("userDetailsForm");
+    userDetailsForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      console.log(user)
+  
+      let formData = new FormData(event.target);
+  
+      console.log(formData);
+  
+      const updateUser = async () => {
+        try {
+          let response = await fetch(`/users/s/${user.userID}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(Object.fromEntries(formData)),
+          });
+          if (!response.ok) {
+            throw new Error(
+              `Failed to load resource: the server responded with a status of ${response.status} (${response.statusText})`
+            );
+          }
+          const data = await response.json();
+          return data;
+        } catch (error) {
+          console.error(error);
+          throw new Error(error);
         }
-        
-    })
-}
+      };
+  
+      let updatedUser = await updateUser();
+      console.log(updatedUser);
+    });
+  }
+  
 
 //This function adds the "Already Read" box in the DOM
+let readArticlesUrl = "http://localhost:3001/users/read/" + getCookies().userID
+
+const readArticles = async () => {
+    try {
+      let response = await fetch(readArticlesUrl, { method: 'GET' });
+      let articleIDs = await response.json();
+      // Use the array of article IDs as needed
+      console.log(articleIDs);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+console.log(readArticles)
 function addAlreadyReadElement(){
     //First checks if logged in
     if(loggedIn()){
         //Find the articles that are read
-        let readArticles = getUser(getCookies().username)[1].readArticles
+        let readArticles = getUser(getCookies().userID)[1].readArticles
         //Takes into consideration that there are none
         readArticles = readArticles === undefined ? JSON.stringify({url: [], title: []}) : readArticles;
         readArticles = JSON.parse(readArticles)

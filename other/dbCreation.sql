@@ -58,6 +58,10 @@ CREATE TABLE readArticles (
     FOREIGN KEY (articleID) REFERENCES news(articleID) --Defines foreign key which refers to the news table.
 )
 
+ALTER TABLE readArticles (
+    ADD CONSTRAINT unique_pairing_constraint UNIQUE (articleID, userID);
+)
+
 -- favouriteArticles table
 
 CREATE TABLE favouriteArticles (

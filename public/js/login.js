@@ -8,20 +8,21 @@ function login(email) {
         //If the user is not logged in, it checks whether a user with that username exists.
         let user = getUser(email)
             .then((user) => {
-                console.log(user)
+                console.log(user[1])
                 let today = new Date()
                 let tomorrow = new Date()
                 tomorrow.setDate(today.getDate()+1)
                 //sets the cookie
                 document.cookie = `email=${email}; expires=${tomorrow}`
-                document.cookie = `firstName=${user["1"].firstName}; expires=${tomorrow}`
+                document.cookie = `firstName=${user[1].firstName}; expires=${tomorrow}`
+                document.cookie = `userID=${user[1].userID}; expires=${tomorrow}`
                 console.log(`${email} logged in.`)
 
                 //Displays username
                 document.getElementById("user").innerHTML = user["1"].firstName;
                 //these functions adds the favourite "hearts" and the articles already read. These are uer specific.
-                addAlreadyReadElement()
-                addFavouriteElement()
+                //addAlreadyReadElement()
+                //addFavouriteElement()
                 userDetailsFormAdded=false
 
                 //returns true
@@ -61,7 +62,7 @@ function logout(email){
         setUserName()
     } else {
         //Logs an error if the user (param) is not logged in
-        console.error(`User: ${email} not logged in. User: ${getCookies().email} is currently logged in.`)
+        console.error(`User: ${email} not logged in. User: ${s(getCookie).email} is currently logged in.`)
     }
     
 }
@@ -103,14 +104,14 @@ function loggedIn(){
 //function to set the username in the DOM
 function setUserName(){
     if(loggedIn()){
-        let username = getCookies().username
-        document.getElementById("user").innerHTML = username
+        let firstName = getCookies().firstName
+        document.getElementById("user").innerHTML = firstName
     } else {
         document.getElementById("user").innerHTML = "LOGIN"
     }
 }
 
-//Gets a list of all users
+//Gets a list of all users --- SKAL SLETTES
 function getUsers(){
     //Gets the users from the localstorage
     let users = localStorage.getItem('users')
@@ -280,7 +281,7 @@ function addLoginForm() {
         let usernameInput = document.createElement("input")
         usernameInput.setAttribute("name", "usernameInput")
         usernameInput.setAttribute("required", "true")
-        usernameInput.setAttribute("placeholder", "Brugernavn")
+        usernameInput.setAttribute("placeholder", "Email")
 
         let passwordInput = document.createElement("input")
         passwordInput.setAttribute("type", "password")
@@ -341,6 +342,7 @@ function loginformEventListener() {
         //Checks which action to take
         if(action === 'login'){
             //Checks the password
+            console.log(formProbs)
             let success = checkPassword(formProbs.usernameInput, formProbs.passwordInput)
             if(success===true){
                 //Closes the popup on success

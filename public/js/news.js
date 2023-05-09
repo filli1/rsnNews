@@ -44,7 +44,7 @@ const newsFeed = async () => {
         let article = newsArray[x]
         //if this is the first iteration, then set the spotligt article to the first article in the array
         if(x===1){
-            spotSource.innerHTML = '- '+article.source;
+            spotSource.innerHTML = (article.source? '- '+article.source : "");
             spotTitle.innerHTML = article.title;
             spotlight.style.backgroundImage = `url('${article.imageUrl}')`;
             spotBtn.setAttribute('href', article.url)
@@ -55,7 +55,9 @@ const newsFeed = async () => {
             articleContainer.appendChild(articleElement);
             articleElement.setAttribute('id', article.url)
             const img = document.createElement("img")
-            img.setAttribute('src', article.imageUrl)
+            if(article.imageUrl){
+                img.setAttribute('src', article.imageUrl)
+            }
             articleElement.appendChild(img);
 
             //This decides if the title is too long to fit inside the container. Max 10 words.
@@ -79,12 +81,6 @@ const newsFeed = async () => {
             miscElement.setAttribute('class', 'flexRow')
             articleElement.appendChild(miscElement);
 
-            const sourceElement = document.createElement("a")
-            sourceElement.setAttribute('class', 'source')
-            const source = document.createTextNode(article.source)
-            sourceElement.appendChild(source)
-            miscElement.appendChild(sourceElement)
-
             const readMoreBtnElement = document.createElement("a")
             const readMoreBtnText = document.createTextNode("Read more")
             readMoreBtnElement.setAttribute('href', article.url)
@@ -99,7 +95,7 @@ const newsFeed = async () => {
     //add an event listener to each one of them
     for(let x=0;x<readMoreBtns.length;x++){
         readMoreBtns[x].addEventListener('click', (event) => {
-            addReadArticle()
+            addReadArticle(x)
             event.preventDefault()
             displayPopup()
             articlePopup(newsArray[x+1])
@@ -107,12 +103,11 @@ const newsFeed = async () => {
     }
     //now decide if there are any of the article that should be favourited and/or is already read.
     addAlreadyReadElement()
-    addFavouriteElement()
+    //addFavouriteElement()
 }
 
-// Updated function to use the new route, database, and controller
-async function addReadArticle(user, articleID) {
-    console.log(user); 
+//Adds read article to database when the user clicks the 'Read More' button.
+async function addReadArticle(articleIndex) {
     try {
       const response = await fetch('http://localhost:3001/users/read', {
         method: 'POST',
@@ -120,11 +115,10 @@ async function addReadArticle(user, articleID) {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-          userID: user.userID,
-          articleID
+          userID: getCookies().userID,
+          newsID: newsArray[articleIndex].articleID
         })
       });
-  
       if (!response.ok) {
         throw new Error('Unable to add read article');
       }
