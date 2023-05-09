@@ -9,6 +9,7 @@ exports.createUser = (req, res) => {
     password: req.body.password,
     nationality: req.body.nationality,
   };
+  console.log(userInfo);
   //First, checks to make sure that the user doesn't already exist.
   executeSQL(
     `SELECT COUNT(*) as count FROM users WHERE email = '${userInfo.email}'`
@@ -36,7 +37,7 @@ exports.createUser = (req, res) => {
 
   //Function called above which creates the user
   function createUser() {
-    executeSQL(`INSERT INTO users (firstName, lastName, email, password, nationality) 
+    return executeSQL(`INSERT INTO users (firstName, lastName, email, password, nationality) 
                 OUTPUT INSERTED.userID
                 VALUES ('${userInfo.firstName}', '${userInfo.lastName}', '${userInfo.email}', '${userInfo.password}', '${userInfo.nationality}')`)
       .then((result) => {
@@ -52,20 +53,21 @@ exports.createUser = (req, res) => {
 
 //Deletes a user from the database, based on email and password.
 exports.deleteUser = (req, res) => {
-  const { email, password } = req.body;
   executeSQL(
-    `DELETE FROM users WHERE email='${email}' AND password='${password}'`
+    `DELETE FROM users WHERE userID = '${req.params.userID}'`
   )
     .then((result) => {
-      return res.status(200).send("User deleted");
+      if (result.affectedRows === 0) {
+        // No rows were deleted, so the user was not found
+        return res.status(404).json({ message: "User not found" });
+      } else {
+        // Some rows were deleted, so the operation was successful
+        return res.status(200).json({ message: "User deleted" });
+      }
     })
     .catch((error) => {
       console.log(error);
-      if (error === "User not found") {
-        return res.status(404).send("User not found");
-      } else {
-        return res.status(500).send(error);
-      }
+      return res.status(500).json({ message: error.message });
     });
 };
 
@@ -90,7 +92,6 @@ exports.updateUser = (req, res) => {
   }
   SQLquery = SQLquery.slice(0, -2);
   SQLquery += ` WHERE userID = ${userID}`;
-  console.log(SQLquery);
   executeSQL(SQLquery)
     .then((result) => {
       return res.status(200).send("User updated");
@@ -108,7 +109,11 @@ exports.updateUser = (req, res) => {
 //Gets a user from the database from userID and returns user info as JSON
 exports.getUser = (req, res) => {
   const email = req.params.email;
-  executeSQL(`SELECT * FROM users WHERE email = '${email}'`)
+  let query = `SELECT * FROM users WHERE email = '${email}'`
+  if(req.params.isUserId){
+    query = `SELECT * FROM users WHERE userID = '${email}'`
+  }
+  executeSQL(query)
     .then((result) => {
       const userarray = Object.keys(result);
       if (userarray.length === 0) {

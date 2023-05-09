@@ -7,7 +7,7 @@ router.post('/', (req, res) => {
   return userController.createUser(req, res);
 });
 
-router.delete('/s/:email', (req, res) => {
+router.delete('/s/:userID', (req, res) => {
   return userController.deleteUser(req, res);
 });
 
@@ -16,7 +16,7 @@ router.put('/s/:userID', (req, res) => {
   return userController.updateUser(req, res);
 });
 
-router.get('/s/:email', (req, res) => {
+router.get('/s/:email/:isUserId?', (req, res) => {
   return userController.getUser(req, res);
 });
 

@@ -55,7 +55,7 @@ let userDetailsFormAdded = false;
 
 //This function creates the user details popup
 function userDetailsPopup(user){
-    console.log(user)
+  console.log(user)
     let popup = document.getElementById("popupContent");
 
     //only display if the form is not already added
@@ -98,7 +98,7 @@ function userDetailsPopup(user){
 
         deleteBtn.addEventListener("click", () => {
             logout(user.email)
-            deleteUser(user.name)
+            deleteUser(user.userID)
             closePopup()
             clearPopup()
         })
@@ -113,11 +113,8 @@ async function updateUserDetails(user) {
     let userDetailsForm = document.getElementById("userDetailsForm");
     userDetailsForm.addEventListener("submit", async (event) => {
       event.preventDefault();
-      console.log(user)
   
       let formData = new FormData(event.target);
-  
-      console.log(formData);
   
       const updateUser = async () => {
         try {
@@ -141,6 +138,10 @@ async function updateUserDetails(user) {
       
   
       let updatedUser = await updateUser();
+      let tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      document.cookie = `firstName=${Object.fromEntries(formData).firstName}; expires=${tomorrow}`;
+      setUserName()
     });
   }
   

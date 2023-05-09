@@ -147,26 +147,23 @@ async function createUser(email,password){
 }
 
 //Deletes a user
-function deleteUser(username){
-    //gets a list of all users. The function returns an object with both an array of all usernames but also an array of all user objects
-    let users = getUsers()
-
-    //checks if the user that should be deleted exists
-    if(users.array.includes(username)){
-        //finds at what index the user is at
-        let deleteUserAtIndex = users.array.indexOf(username)
-
-        //deletes the user from the array of objects
-        users.obj.splice(deleteUserAtIndex,1)
-    
-        //sets the localstorage to the new array of ibject
-        localStorage.setItem('users', JSON.stringify(users.obj))
-
-        console.log(`User: ${username} was deleted.`)
-    } else {
-        //gives an error if the user does not exist
-        console.error(`User: ${username} does not exist.`)
+async function deleteUser(userID){
+  const deleteUserRequest = async () => {
+    try {
+      const response = await fetch(`/users/s/${userID}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error(`Failed to load resource: the server responded with a status of ${response.status} (${response.statusText})`);
+      }
+      const data = await response.json();
+      console.log(data.message);
+      return data
+    } catch (error) {
+      throw new Error(error)
     }
+  }
+  let deletedUser = await deleteUserRequest();
     
 }
 // Supposed to be moved into the User.js file
@@ -205,8 +202,9 @@ function updateUser(username,property='',value=''){
 }
 
 //Gets information about a specific user
-async function getUser(email){
-    console.log(email)
+async function getUser(email){  
+  email["femwo"] = "femwo"
+  console.log(email)
     const fetchUser = async () => {
         try {
             let response = await fetch(`/users/s/${email}`, {
@@ -352,7 +350,7 @@ function loginformEventListener() {
         createUser(formProbs.usernameInput, formProbs.passwordInput)
           .then((email) => {
             // log in the user with the newly created email address
-            return login(email);
+            return login(formProbs.usernameInput);
           })
           .then((success) => {
             if (success === true) {
