@@ -110,9 +110,9 @@ const newsFeed = async () => {
     // Define the interval time 
     const intervalTime = 5000;
     // Periodically checks for updates and adds elements if articles are then read after initial load.
-    setInterval(async () => {
-    addAlreadyReadElement();
-    }, intervalTime);
+    // setInterval(async () => {
+    // addAlreadyReadElement();
+    // }, intervalTime);
     addFavouriteElement()  
     
 }
