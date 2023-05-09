@@ -55,7 +55,6 @@ let userDetailsFormAdded = false;
 
 //This function creates the user details popup
 function userDetailsPopup(user){
-  console.log(user)
     let popup = document.getElementById("popupContent");
 
     //only display if the form is not already added
@@ -165,10 +164,12 @@ async function addAlreadyReadElement() {
     if (loggedIn()) {
       try {
         const readArticlesArray = await readArticles();
+        console.log(readArticlesArray);
         for (let x = 2; x < 8; x++) {
           const id = newsArray[x].articleID;
           const url = newsArray[x].url
           if (readArticlesArray.includes(id)) {
+            //Vi kan måske lavet noget her der lige tjekker om der allerede er et already read element
             let articleElement = document.getElementById(`${url}`)
             const alreadyReadElement = document.createElement("span");
             const alreadyReadElementText = document.createTextNode("Already read");

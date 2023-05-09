@@ -16,7 +16,6 @@ async function login(email) {
             console.log(`${email} logged in.`);
             document.getElementById("user").innerHTML = user["1"].firstName;
             userDetailsFormAdded = false;
-            addFavouriteElement() //Calls the function, so the favourite buttons appear once the user logs in. 
             return true;
         } catch (error) {
             throw new Error(`Email: ${email} does not exist.`);
@@ -203,9 +202,7 @@ function updateUser(username,property='',value=''){
 }
 
 //Gets information about a specific user
-async function getUser(email){  
-  email["femwo"] = "femwo"
-  console.log(email)
+async function getUser(email){ 
     const fetchUser = async () => {
         try {
             let response = await fetch(`/users/s/${email}`, {

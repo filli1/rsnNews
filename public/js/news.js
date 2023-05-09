@@ -132,6 +132,8 @@ async function addReadArticle(articleIndex) {
       });
       if (!response.ok) {
         throw new Error('Unable to add read article');
+      } else {
+        addAlreadyReadElement();
       }
     } catch (error) {
       console.log(error);
