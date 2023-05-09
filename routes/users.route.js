@@ -32,7 +32,7 @@ router.delete('/likes', (req, res) => {
   return userController.unlike(req, res);
 });
 
-router.post('/favourite', (req, res) => {
+router.post('/favourite/', (req, res) => {
   return userController.addFavourite(req, res);
 });
 
@@ -40,7 +40,7 @@ router.delete('/favourite', (req, res) => {
   return userController.unfave (req, res);
 })
 
-router.get('/favourite', (req, res) =>{
+router.get('/favourite/:userID', (req, res) =>{
   return userController.getFaves (req, res);
 })
 

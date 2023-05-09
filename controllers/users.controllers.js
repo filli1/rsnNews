@@ -205,7 +205,7 @@ exports.unfave = (req, res) => {
 
 //Gets all favourites for specified user
 exports.getFaves = (req, res) => {
-  const { userID } = req.body;
+  const userID = req.params.userID;
   executeSQL(`SELECT articleID FROM favouriteArticles WHERE userID = ${userID}`)
     .then((response) => {
       const articleIDs = [];

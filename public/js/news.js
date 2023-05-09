@@ -104,9 +104,17 @@ const newsFeed = async () => {
             articlePopup(newsArray[x+1])
         })
     }
-    //now decide if there are any of the article that should be favourited and/or is already read.
-    addAlreadyReadElement()
-    //addFavouriteElement()
+    
+    // Calls the function once to add 'Already read' when the page is loaded.
+    addAlreadyReadElement();
+    // Define the interval time 
+    const intervalTime = 5000;
+    // Periodically checks for updates and adds elements if articles are then read after initial load.
+    setInterval(async () => {
+    addAlreadyReadElement();
+    }, intervalTime);
+    addFavouriteElement()  
+    
 }
 
 //Adds read article to database when the user clicks the 'Read More' button.
@@ -172,6 +180,8 @@ function deleteFavouriteArticle(user,url){
         updateUser(user[1].name,'favouriteArticles',JSON.stringify(favouriteArticles))
     }
 }
+
+
 
 //This is a popup containing the article which is referred to in the parameter
 function articlePopup(newsArticle){

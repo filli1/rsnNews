@@ -146,6 +146,7 @@ async function updateUserDetails(user) {
   }
   
 
+
 //This function adds the "Already Read" box in the DOM
 let readArticlesUrl = "http://localhost:3001/users/read/" + getCookies().userID
 
@@ -160,7 +161,6 @@ const readArticles = async () => {
     return [];
   }
 };
-
 async function addAlreadyReadElement() {
     if (loggedIn()) {
       try {
@@ -182,83 +182,80 @@ async function addAlreadyReadElement() {
       }
     }
   }
+ 
+  let favouritesUrl = "http://localhost:3001/users/favourite/"
+
+   const favourites = async () => {
+    try {
+       let response = await fetch(favouritesUrl + getCookies().userID, { 
+           method: 'GET' 
+       });
+       return response.json();
+     } catch (error) {
+       console.log(error);
+       return [];
+     }
+   };
+   //This function adds hearts and lets the user favourite and unfavourite articles.
+  async function addFavouriteElement() {
+    // Check if the user is logged in
+    if (loggedIn()) {
+      try {
+        // Retrieve the user's favourites array
+        const favouritesArray = await favourites();
+        console.log(favouritesArray);
   
-
-// function addAlreadyReadElement(){
-//     //First checks if logged in
-//     if(loggedIn()){
-//         //Find the articles that are read
-//         let readArticles = getUser(getCookies().userID)[1].readArticles
-//         //Takes into consideration that there are none
-//         readArticles = readArticles === undefined ? JSON.stringify({url: [], title: []}) : readArticles;
-//         readArticles = JSON.parse(readArticles)
-//         //gets the articles that are displayed on the site
-//         let newsArray = JSON.parse(sessionStorage.getItem("newsArray")).articles
-//         //For each article on the site find out if it is in the already read array
-//         for(let x=1; x<7; x++){
-//             //Get the URL of current iterations newsarticle
-//             let url = newsArray[x].url
-
-//             //if the current iterations article is also in found in the readArticles array
-//             if(readArticles.url.includes(url)){
-//                 let articleElement = document.getElementById(`${url}`)
-                
-//                 //adds the box
-//                 let alreadyReadElement = document.createElement("span")
-//                 let alreadyReadElementText = document.createTextNode("Already read")
-//                 alreadyReadElement.appendChild(alreadyReadElementText)
-//                 alreadyReadElement.setAttribute('class', 'alreadyRead')
-//                 articleElement.appendChild(alreadyReadElement)
-//             }
-//         }
-//     }
-// }
-
-//this function adds the heart that can be used to favourite articles
-function addFavouriteElement() {
-    //Checks if logged in
-    if(loggedIn()){
-        //gets favourite articles
-        let favouriteArticles = getUser(getCookies().username)[1].favouriteArticles
-        //if none is set make an empty object
-        favouriteArticles = favouriteArticles === undefined ? JSON.stringify({url: [], title: []}) : favouriteArticles;
-        favouriteArticles = JSON.parse(favouriteArticles);
-        //gets articles displayed on the site
-        let newsArray = JSON.parse(sessionStorage.getItem("newsArray")).articles
-        //goes through each article one at a time
-        for(let x = 1; x<7; x++){
-            let url = newsArray[x].url
-            //each article has an ID equal to their URL
-            let article = document.getElementById(url)
-
-            //Creates the heart for each article
-            let favouriteElement = document.createElement("span")
-            
-            //if the article is already favourited it will be assigned a class indicating that
-            if(favouriteArticles.url.includes(url)){
-                favouriteElement.setAttribute('class','favourite favouriteSelected')
+        // Iterate over each article and add the favourite element
+        for (let x = 2; x < 8; x++) {
+          const url = newsArray[x].url;
+          const id = newsArray[x].articleID;
+  
+          // Get the article element by ID
+          const article = document.getElementById(url);
+          const favouriteElement = document.createElement("span");
+  
+          // Set the class of the favourite element based on whether the article is favourited or not
+          if (favouritesArray.includes(id)) {
+            favouriteElement.setAttribute("class", "favourite favouriteSelected");
+          } else {
+            favouriteElement.setAttribute("class", "favourite favouriteNotSelected");
+          }
+          article.appendChild(favouriteElement);
+  
+          // Attach an event listener to the favourite element
+          favouriteElement.addEventListener("click", async (e) => {
+            const isFavourited = e.target.classList.contains("favouriteSelected");
+            if (isFavourited) {
+              // If the article is already favourited, remove it from the user's favourites
+              favouriteElement.classList.remove("favouriteSelected");
+              favouriteElement.classList.add("favouriteNotSelected");
+              await fetch(favouritesUrl, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userID: getCookies().userID, articleID: newsArray[x].articleID }),
+              });
             } else {
-                favouriteElement.setAttribute('class','favourite favouriteNotSelected')
+              // If the article is not favourited, add it to the user's favourites
+              favouriteElement.classList.remove("favouriteNotSelected");
+              favouriteElement.classList.add("favouriteSelected");
+              await fetch(favouritesUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ userID: getCookies().userID, articleID: newsArray[x].articleID }),
+              });
             }
-            //Adds the heart to the DOM
-            article.appendChild(favouriteElement)
-
-            //if the heart is clicked do this
-            favouriteElement.addEventListener('click', (e) => {
-                //if the articles is favourited it should be not selected and deleted from the users favourite articles
-                if (e.srcElement.className.includes('favouriteSelected')){
-                    favouriteElement.setAttribute('class','favourite favouriteNotSelected')
-                    deleteFavouriteArticle(getCookies().username,url)
-                } else {
-                    //if the articles is not favourited it should be selected and added from the users favourite articles
-                    favouriteElement.setAttribute('class','favourite favouriteSelected')
-                    addFavouriteArticle(getCookies().username,url,newsArray[x].title)
-                }
-            })
+          });
         }
-
+      } catch (error) {
+        console.error(error);
+      }
     }
-}
+  }
+  
 
 //this function removes all the hearts and already read boxes. This is of use if the user for example logs out
 function deleteFavouriteElements(){
