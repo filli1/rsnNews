@@ -32,10 +32,6 @@ app.get('/', function(req, res, next) {
     res.sendFile(path.join(__dirname, '/index.html'));
 });
 
-var server = app.listen(port, function(error){
-    if (error) throw error;
-    console.log("Express server listening on port, ", port)
-});
 const users = require('./routes/users.route')
 app.use('/users', users)
 
@@ -44,4 +40,11 @@ app.use('/news', news)
 
 const weather = require('./routes/weather.route')
 app.use('/weather', weather)
+
+var server = app.listen(port, /* '192.168.68.61', */ function(error){
+    if (error) throw error;
+    console.log("Express server listening on port, ", port)
+});
+
+module.exports = server
 //TO CLOSE DOWN A SERVER PRESS CTRL + C

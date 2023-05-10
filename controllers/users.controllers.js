@@ -9,7 +9,6 @@ exports.createUser = (req, res) => {
     password: req.body.password,
     nationality: req.body.nationality,
   };
-  console.log(userInfo);
   //First, checks to make sure that the user doesn't already exist.
   executeSQL(
     `SELECT COUNT(*) as count FROM users WHERE email = '${userInfo.email}'`
@@ -86,7 +85,6 @@ exports.updateUser = (req, res) => {
     if (userInfo.hasOwnProperty(key)) {
       let value = userInfo[key];
       if (value === undefined) continue;
-      console.log(`Key: ${key}, Value: ${value}`);
       SQLquery += `${key} = '${value}', `;
     }
   }
@@ -97,7 +95,6 @@ exports.updateUser = (req, res) => {
       return res.status(200).send("User updated");
     })
     .catch((error) => {
-      console.log(error);
       if (error === "User not found") {
         return res.status(404).send({ message: "User not found" });
       } else {

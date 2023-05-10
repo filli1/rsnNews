@@ -2,7 +2,7 @@
 //NY API: 4d438c96e5c54b938fe57e7e8626fe0b
 //Initial search
 
-let newsUrl = `http://localhost:3001/news/frontpage`
+let newsUrl = `/news/frontpage`
 
 //Fetches the news from the news api
 const news = async () => {
@@ -120,7 +120,7 @@ const newsFeed = async () => {
 //Adds read article to database when the user clicks the 'Read More' button.
 async function addReadArticle(articleIndex) {
     try {
-      const response = await fetch('http://localhost:3001/users/read', {
+      const response = await fetch('/users/read', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

@@ -1,6 +1,6 @@
 //The URL to retrieve the weather from
-let forecastUrl = 'http://localhost:3001/weather'
-let weatherUrl = 'http://localhost:3001/weather/currentweather'
+let forecastUrl = '/weather'
+let weatherUrl = '/weather/currentweather'
 
 //This function interpretes the weathercode from the API call
 function weatherCode(ww){

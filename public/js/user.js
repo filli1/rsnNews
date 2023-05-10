@@ -147,7 +147,7 @@ async function updateUserDetails(user) {
 
 
 //This function adds the "Already Read" box in the DOM
-let readArticlesUrl = "http://localhost:3001/users/read/" + getCookies().userID
+let readArticlesUrl = "/users/read/" + getCookies().userID
 
 const readArticles = async () => {
   try {
@@ -184,7 +184,7 @@ async function addAlreadyReadElement() {
     }
   }
  
-  let favouritesUrl = "http://localhost:3001/users/favourite/"
+  let favouritesUrl = "/users/favourite/"
 
    const favourites = async () => {
     try {
