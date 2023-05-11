@@ -11,4 +11,8 @@ router.get('/currentweather', (req, res) => {
     return weatherController.getCurrentWeather(req, res);
 })
 
+router.get('/historical', (req, res) => {
+    return weatherController.getHistoricWeather(req, res);
+})
+
 module.exports = router;

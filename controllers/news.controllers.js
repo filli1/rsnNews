@@ -27,8 +27,8 @@ exports.getLikes = (req, res) => {
     const articleID = req.params.articleID;
     executeSQL(`SELECT COUNT(*) FROM likes WHERE articleID = ${articleID}`)
         .then(result => {
-            const sentResult = { "likes": result[1].noColName };
-            return res.status(200).send(sentResult.likes);  
+            const sentResult = { "likes": result['1'].noColName };
+            return res.status(200).send(JSON.stringify(sentResult['likes']));  
         })
         .catch(error => {
             return res.status(500).send("Error");

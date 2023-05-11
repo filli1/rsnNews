@@ -34,7 +34,7 @@ const newsFeed = async () => {
     sessionStorage.setItem("newsArray", JSON.stringify(newsArray));
     if (Object.keys(newsArray).length === 0){
         alert("Der er ingen artikler der matcher din søgning, du bliver ført tilbage til forsiden")
-        newsUrl = `http://localhost:3001/news/frontpage`
+        newsUrl = `/news/frontpage`
         newsArray = (await news());
     }
     
@@ -105,82 +105,11 @@ const newsFeed = async () => {
         })
     }
     
-    // Calls the function once to add 'Already read' when the page is loaded.
+    // Calls the function once to add 'Already read' and favourites when the page is loaded.
     addAlreadyReadElement();
-    // Define the interval time 
-    const intervalTime = 5000;
-    // Periodically checks for updates and adds elements if articles are then read after initial load.
-    // setInterval(async () => {
-    // addAlreadyReadElement();
-    // }, intervalTime);
-    addFavouriteElement()  
+    addFavouriteElement();  
+    addLikeElement()
     
-}
-
-//Adds read article to database when the user clicks the 'Read More' button.
-async function addReadArticle(articleIndex) {
-    try {
-      const response = await fetch('/users/read', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          userID: getCookies().userID,
-          newsID: newsArray[articleIndex].articleID
-        })
-      });
-      if (!response.ok) {
-        throw new Error('Unable to add read article');
-      } else {
-        addAlreadyReadElement();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  }
-  
-
-//this method is the same as the already read, just a different list for a diffenrent purpose
-function addFavouriteArticle(user,url,title){
-    user = getUser(user);
-
-    //if there are no read articles then it should create this array at the specific user
-    if(user[1].favouriteArticles === undefined){
-        let favouriteArticles = {
-            url:[url],
-            title: [title]
-        }
-        //saves the object in the localstorage
-        updateUser(user[1].name,'favouriteArticles',JSON.stringify(favouriteArticles))
-    } else {
-        //Here the difference is that it takes what is already saved in the localstorage and appends to the arrays
-        let favouriteArticles = JSON.parse(user[1].favouriteArticles)
-        favouriteArticles.url.push(url)
-        favouriteArticles.title.push(title)
-        updateUser(user[1].name,'favouriteArticles',JSON.stringify(favouriteArticles))
-    }
-}
-
-//This function removes a favourite article from the user
-function deleteFavouriteArticle(user,url){
-    //First the user is retrieved
-    user = getUser(user);
-
-    //Checks if there are any favourite articles on the user
-    if(user[1].favouriteArticles === undefined){
-        console.error('No favourite articles')
-    } else {
-        //The favourite articles is retrieved as a JSON object
-        let favouriteArticles = JSON.parse(user[1].favouriteArticles)
-        //Finds the article to delete from favourites in the array
-        let favouriteArticleToDelete = favouriteArticles.url.indexOf(url)
-        //Deletes the article from both the url and title array
-        favouriteArticles.url.splice(favouriteArticleToDelete,1)
-        favouriteArticles.title.splice(favouriteArticleToDelete,1)
-        //Updates the user with the new favourite article array
-        updateUser(user[1].name,'favouriteArticles',JSON.stringify(favouriteArticles))
-    }
 }
 
 

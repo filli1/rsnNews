@@ -146,6 +146,30 @@ async function updateUserDetails(user) {
   
 
 
+
+//Adds read article to database when the user clicks the 'Read More' button.
+async function addReadArticle(articleIndex) {
+  try {
+    const response = await fetch('/users/read', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        userID: getCookies().userID,
+        newsID: newsArray[articleIndex].articleID
+      })
+    });
+    if (!response.ok) {
+      throw new Error('Unable to add read article');
+    } else {
+      addAlreadyReadElement();
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 //This function adds the "Already Read" box in the DOM
 let readArticlesUrl = "/users/read/" + getCookies().userID
 
@@ -164,7 +188,6 @@ async function addAlreadyReadElement() {
     if (loggedIn()) {
       try {
         const readArticlesArray = await readArticles();
-        console.log(readArticlesArray);
         for (let x = 2; x < 8; x++) {
           const id = newsArray[x].articleID;
           const url = newsArray[x].url
@@ -184,6 +207,8 @@ async function addAlreadyReadElement() {
     }
   }
  
+  //Lets a user favourite and unfavourite articles
+  //First defines the endpoint using cookies
   let favouritesUrl = "/users/favourite/"
 
    const favourites = async () => {
@@ -197,14 +222,14 @@ async function addAlreadyReadElement() {
        return [];
      }
    };
-   //This function adds hearts and lets the user favourite and unfavourite articles.
+
+  //Then defines the function
   async function addFavouriteElement() {
     // Check if the user is logged in
     if (loggedIn()) {
       try {
         // Retrieve the user's favourites array
         const favouritesArray = await favourites();
-        console.log(favouritesArray);
   
         // Iterate over each article and add the favourite element
         for (let x = 2; x < 8; x++) {
@@ -258,9 +283,112 @@ async function addAlreadyReadElement() {
   }
   
 
+  let getLikesUrl = "/news/likes/";
+  let likesUrl = "/users/likes/";
+  
+  const getTotalLikes = async (articleID) => {
+    try {
+      let response = await fetch(getLikesUrl + articleID, { method: 'GET' });
+      return response.text();
+    } catch (error) {
+      console.log(error);
+      return '0';
+    }
+  };
+  
+  const getLikedArticlesByUser = async (userID) => {
+    try {
+      let response = await fetch(`/users/likes/${userID}`, { method: 'GET' });
+      return response.json();
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
+  
+  async function addLikeElement() {
+    // Check if the user is logged in
+    if (loggedIn()) {
+      const userID = getCookies().userID;
+      const likedArticles = await getLikedArticlesByUser(userID);
+      try {
+        // Iterate over each article and add the like element
+        for (let x = 2; x < 8; x++) {
+          const url = newsArray[x].url;
+          const id = newsArray[x].articleID;
+  
+          // Get the article element by ID
+          const article = document.getElementById(url);
+          const likeElement = document.createElement("span");
+          likeElement.setAttribute("class", "likeCounter")
+          likeElement.classList.add("like")
+          const imageElement = document.createElement("span");
+  
+          // Get the total number of likes for the article
+          const totalLikesCount = await getTotalLikes(id);
+          likeElement.textContent = totalLikesCount;
+  
+          // Check if the current user has liked the article
+          
+          const isLiked = likedArticles.includes(id);
+  
+          
+          article.appendChild(likeElement);
+
+           // Set the class of the like element based on whether the article is liked or not
+           if (isLiked) {
+            imageElement.setAttribute("class", "like likeSelected");
+          } else {
+            imageElement.setAttribute("class", "like likeNotSelected");
+          }
+          
+          article.appendChild(imageElement);
+  
+          // Attach an event listener to the image element
+          imageElement.addEventListener("click", async (e) => {
+            const isLiked = imageElement.classList.contains("likeSelected");
+            if (isLiked) {
+              // Unlike the article
+              imageElement.classList.remove("likeSelected");
+              imageElement.classList.add("likeNotSelected");
+              await fetch(likesUrl, {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({userID: getCookies().userID, articleID: id }),
+              });
+              likeElement.textContent = parseInt(likeElement.textContent) - 1;
+            } else {
+              // Like the article
+              imageElement.classList.remove("likeNotSelected");
+              imageElement.classList.add("likeSelected");
+              await fetch(likesUrl, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({userID: userID, articleID: id }),
+              });
+              likeElement.textContent = parseInt(likeElement.textContent) + 1;
+            }
+          });
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  }
+  
+
+  
+
+
+
+
 //this function removes all the hearts and already read boxes. This is of use if the user for example logs out
 function deleteFavouriteElements(){
-    let elementsToDelete = document.querySelectorAll("span.favourite, span.alreadyRead")
+    let elementsToDelete = document.querySelectorAll("span.favourite, span.alreadyRead, span.like")
     elementsToDelete.forEach(e => {
         e.remove()
     })

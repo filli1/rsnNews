@@ -171,6 +171,23 @@ exports.unlike = (req, res) => {
     });
 };
 
+//Gets all likes for specified User
+exports.getLikesByUser = (req, res) => {
+  const userID = req.params.userID;
+  executeSQL(`SELECT articleID FROM likes WHERE userID = ${userID}`)
+    .then((response) => {
+      const articleIDs = [];
+      for (const key in response) {
+        articleIDs.push(response[key].articleID);
+      }
+      return res.status(200).send(articleIDs);
+    })
+    .catch((error) => {
+      console.log(error);
+      return res.status(500).send(error);
+    });
+};
+
 //Adds favourite article
 exports.addFavourite = (req, res) => {
   const { userID, articleID } = req.body;

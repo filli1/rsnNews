@@ -1,0 +1,30 @@
+.like {
+    padding: 2px;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    margin: 6px;
+    background-position: center;
+    background-size: cover;
+    bottom: 0;
+    right: 4px;
+    margin-bottom: 20px; /* Add margin-bottom to create space for the like counter */
+  }
+  
+  .likeNotSelected {
+    background-image: url('../img/like.png');
+    bottom: 0;
+    right: 0;
+  }
+  
+  .likeSelected {
+    background-image: url('../img/isliked.png');
+    bottom: 0;
+    right: 0;
+  }
+  
+  .likeCounter {
+    position: absolute;
+    right: 15px;
+  }
+  

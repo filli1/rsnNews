@@ -35,6 +35,26 @@ CREATE TABLE news (
     description varchar(255)
 )
 
+-- categories table
+
+
+CREATE TABLE categories (
+    categoryID INT PRIMARY KEY IDENTITY(1,1),
+    category varchar(255)
+)
+
+INSERT INTO categories (category) VALUES ('Finans'), ('Politik'), ('Børn'), ('Royale'), ('Livstil'), ('Sport'), ('Mad'), ('Natur'), ('Vejr');
+
+-- favouriteCategories table
+CREATE TABLE favouriteCategories (
+    userID int,
+    categoryID int,
+    FOREIGN KEY (userID) REFERENCES users(userID), -- Defines foreign key which refers to the user table.
+    FOREIGN KEY (categoryID) REFERENCES categories(categoryID) --Defines foreign key which refers to the news table.
+)
+
+ALTER TABLE favouriteCategories
+ADD CONSTRAINT unique_pairing_constraint_fav_category UNIQUE (userID, categoryID)
 
 -- likes table
 
@@ -47,7 +67,6 @@ CREATE TABLE likes (
 
 )
 
-
 -- readArticles table
 
 
@@ -58,9 +77,8 @@ CREATE TABLE readArticles (
     FOREIGN KEY (articleID) REFERENCES news(articleID) --Defines foreign key which refers to the news table.
 )
 
-ALTER TABLE readArticles (
-    ADD CONSTRAINT unique_pairing_constraint UNIQUE (articleID, userID);
-)
+ALTER TABLE readArticles
+ADD CONSTRAINT unique_pairing_constraint UNIQUE (articleID, userID);
 
 -- favouriteArticles table
 
@@ -70,3 +88,4 @@ CREATE TABLE favouriteArticles (
     FOREIGN KEY (userID) REFERENCES users(userID), --Defines foreign key which refers to the user table.
     FOREIGN KEY (articleID) REFERENCES news(articleID) --Defines foreign key which refers to the news table.
 )
+

@@ -32,6 +32,10 @@ router.delete('/likes', (req, res) => {
   return userController.unlike(req, res);
 });
 
+router.get('/likes/:userID', (req, res) => {
+  return userController.getLikesByUser(req, res)
+})
+
 router.post('/favourite/', (req, res) => {
   return userController.addFavourite(req, res);
 });

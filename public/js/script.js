@@ -20,7 +20,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const searchForm = document.getElementById("searchForm");
     searchForm.addEventListener('submit', (event) => {
         event.preventDefault();
-        //This code is taken from https://stackoverflow.com/questions/3547035/getting-html-form-values/66407161#66407161const userID = user[1].userID;
+        //This code is taken from https://stackoverflow.com/questions/3547035/getting-html-form-values/66407161#66407161
         //Link above is found through https://hait.cbss.dk/weeks/uge-40.html
         let formData = new FormData (event.target);
         let formProbs = Object.fromEntries(formData)  
@@ -39,7 +39,7 @@ window.addEventListener("DOMContentLoaded", () => {
         from ? searchParameter += `/${from}` : null;
         to ? searchParameter += `/${to}` : null;
         //This adds the searchParameter to the url
-        newsUrl = `http://127.0.0.1:3001/news/search/${searchParameter}`
+        newsUrl = `/news/search/${searchParameter}`
         //This clears the article seaction
         document.getElementById('articles').innerHTML = ''
         document.getElementById("spotSource").innerHTML = ''

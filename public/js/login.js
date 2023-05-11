@@ -16,6 +16,7 @@ async function login(email) {
             console.log(`${email} logged in.`);
             document.getElementById("user").innerHTML = user["1"].firstName;
             userDetailsFormAdded = false;
+  
             return true;
         } catch (error) {
             throw new Error(`Email: ${email} does not exist.`);
@@ -100,19 +101,6 @@ function setUserName(){
     }
 }
 
-//Gets a list of all users --- SKAL SLETTES
-function getUsers(){
-    //Gets the users from the localstorage
-    let users = localStorage.getItem('users')
-
-    //Checks if there are any users in the local storage, makes an empty array if not
-    users = users==undefined?[]:JSON.parse(users);
-    let userList = {}
-    userList.obj = users
-    //this creates a list (array) of all the usernames in the localstorage
-    userList.array = userList.obj.map(obj => obj.name)
-    return userList;
-}
 
 //Creates a user
 async function createUser(email,password){
@@ -166,40 +154,6 @@ async function deleteUser(userID){
   let deletedUser = await deleteUserRequest();
     
 }
-// Supposed to be moved into the User.js file
-//Updates a specific user with any property to any value
-function updateUser(username,property='',value=''){
-
-    //retrieves all users
-    let users = getUsers()
-
-    //divides the user obj into to variables
-    let userObj = users.obj
-
-    //this only contains all usernames
-    let userArray = users.array
-
-    //if the username exists
-    if(userArray.includes(username)){
-        //finds at what it index the user should be updated
-        let updateUserAtIndex = userArray.indexOf(username)
-
-        //retrieves the user that should be updated as an object
-        let userToUpdate = userObj[updateUserAtIndex]
-
-        //Either creates or updates the user depending if the property was already existing.
-        userToUpdate[property] = value;
-
-        //corrects the updated user in the user Obj
-        userObj[updateUserAtIndex] = userToUpdate;
-
-        //saves the changes to the localstorage.
-        localStorage.setItem('users', JSON.stringify(userObj))
-    } else {
-        //Console error if the user does not exist
-        console.error(`User: ${username} does not exist.`)
-    }
-}
 
 //Gets information about a specific user
 async function getUser(email){ 
@@ -223,7 +177,7 @@ async function getUser(email){
           return user
 }
 
-//Checks if the password in the param aligns with the one set in the localstorage
+//Checks if the password in the param aligns with the one set in the database
 async function checkPassword(username, password) {
     try {
       // get the user
@@ -321,6 +275,7 @@ function switchToCreateUser() {
 function loginformEventListener() {
     const loginform = document.getElementById("loginform");
     loginform.addEventListener("submit", (event) => {
+      
       event.preventDefault();
       // get the form data
       const formData = new FormData(event.target);
@@ -329,12 +284,16 @@ function loginformEventListener() {
       // check which action to take
       const action = formProbs.type;
       if (action === "login") {
+        
         // check the password
         checkPassword(formProbs.usernameInput, formProbs.passwordInput)
           .then((success) => {
             if (success === true) {
               closePopup();
               clearPopup();
+              addAlreadyReadElement();
+              addFavouriteElement();  
+              addLikeElement()
             } else {
               popupError(success);
             }
@@ -354,6 +313,9 @@ function loginformEventListener() {
             if (success === true) {
               closePopup();
               clearPopup();
+              addAlreadyReadElement();
+              addFavouriteElement();  
+              addLikeElement()
             } else {
               popupError("Failed to log in.");
             }
