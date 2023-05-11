@@ -192,13 +192,13 @@ async function addAlreadyReadElement() {
           const id = newsArray[x].articleID;
           const url = newsArray[x].url
           if (readArticlesArray.includes(id)) {
-            //Vi kan måske lavet noget her der lige tjekker om der allerede er et already read element
             let articleElement = document.getElementById(`${url}`)
             const alreadyReadElement = document.createElement("span");
             const alreadyReadElementText = document.createTextNode("Already read");
             alreadyReadElement.appendChild(alreadyReadElementText);
             alreadyReadElement.setAttribute("class", "alreadyRead");
             articleElement.appendChild(alreadyReadElement);
+            addAlreadyReadElement()
           }
         }
       } catch (error) {

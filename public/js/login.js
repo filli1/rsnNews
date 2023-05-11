@@ -36,7 +36,7 @@ function logout(email){
         let yesterday = new Date()
         yesterday.setDate(today.getDate()-365)
         const cookies = getCookies()
-
+        deleteFavouriteElements()
 
         //Deletes cookie if the user is logged in
         document.cookie = `email=; expires=${yesterday.toUTCString()}; path =/`
@@ -146,6 +146,7 @@ async function deleteUser(userID){
       }
       const data = await response.json();
       console.log(data.message);
+      deleteFavouriteElements()
       return data
     } catch (error) {
       throw new Error(error)
