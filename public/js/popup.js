@@ -41,7 +41,7 @@ window.addEventListener("DOMContentLoaded", () => {
         closePopup()
         clearPopup()
         userDetailsFormAdded=false;
-        
+        loginFormAdded=false;
         favouritesClicked=false;
     })
 })
